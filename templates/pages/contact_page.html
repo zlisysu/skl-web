@@ -1,0 +1,50 @@
+{% extends "base_page.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+    {% include "navigation/breadcrumbs.html" %}
+    <section class="site-padding site-container pt-20 pb-24">
+        <h1 class="font-serif4 text-6xl md:text-8xl font-bold">{{ page.title }}</h1>
+        {% if page.introduction %}
+            <div class="rich-text max-w-4xl pt-8">{{ page.introduction|richtext }}</div>
+        {% endif %}
+
+        <div class="grid gap-8 pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <div class="rounded-3xl border border-mackerel-200 bg-white/80 p-8">
+                <h2 class="text-3xl font-semibold">联系信息</h2>
+                <div class="pt-6 space-y-4 text-lg">
+                    {% if page.lab_name %}<p><strong>实验室：</strong>{{ page.lab_name }}</p>{% endif %}
+                    {% if page.contact_person %}<p><strong>联系人：</strong>{{ page.contact_person }}</p>{% endif %}
+                    {% if page.address %}<p><strong>地址：</strong>{{ page.address }}</p>{% endif %}
+                    {% if page.postcode %}<p><strong>邮编：</strong>{{ page.postcode }}</p>{% endif %}
+                    {% if page.phone %}<p><strong>电话：</strong>{{ page.phone }}</p>{% endif %}
+                    {% if page.email %}<p><strong>邮箱：</strong>{{ page.email }}</p>{% endif %}
+                    {% if page.website %}<p><strong>网站：</strong><a class="underline underline-offset-4" href="{{ page.website }}">{{ page.website }}</a></p>{% endif %}
+                </div>
+            </div>
+
+            <div class="rounded-3xl border border-mackerel-200 bg-white/80 p-8">
+                <h2 class="text-3xl font-semibold">交通信息</h2>
+                {% if page.traffic_info %}
+                    <div class="rich-text pt-6">{{ page.traffic_info|richtext }}</div>
+                {% else %}
+                    <p class="pt-6 opacity-70">可在后台补充地铁、公交和校区路线说明。</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if page.map_embed_code %}
+            <section class="pt-12">
+                <div class="rounded-3xl overflow-hidden border border-mackerel-200 bg-white">
+                    {{ page.map_embed_code|safe }}
+                </div>
+            </section>
+        {% endif %}
+
+        {% if page.body %}
+            <section class="pt-12">
+                {% include_block page.body %}
+            </section>
+        {% endif %}
+    </section>
+{% endblock %}

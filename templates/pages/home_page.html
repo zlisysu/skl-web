@@ -1,0 +1,151 @@
+
+{% extends "base_page.html" %}
+{% load wagtailcore_tags wagtailimages_tags static %}
+
+{% block content %}
+    <div class="site-padding site-container">
+        <div class="relative max-w-[872px] pt-32 tall:pt-40 pb-40 md:pb-60">
+            <h1 class="relative z-10 font-serif4 [word-spacing:-6px] font-bold text-7xl lg:text-10xl">
+                {{ page.title }}
+            </h1>
+
+            {% if page.hero_image %}
+                <div class="
+                    absolute
+                    overflow-hidden
+                    z-0
+                    right-[-78px]
+                    top-[98px]
+                    w-52
+                    h-52
+                    md:right-[-131px]
+                    md:top-[24px]
+                    tall:md:top-[131px]
+                    md:w-64
+                    md:h-64
+                    rotate-[8deg]
+                    rounded-3xl
+                    border-[3px]
+                    border-dashed
+                    border-mackerel-200
+                    bg-white
+                    shadow-xl">
+                    {% image page.hero_image fill-640x640 class="w-full h-full object-cover" %}
+                </div>
+            {% else %}
+                <div class="
+                    absolute
+                    overflow-hidden
+                    z-0
+                    right-[-78px]
+                    top-[98px]
+                    w-52
+                    h-52
+                    md:right-[-131px]
+                    md:top-[24px]
+                    tall:md:top-[131px]
+                    md:w-64
+                    md:h-64
+                    rotate-[32deg]
+                    border-[3px]
+                    rounded-3xl
+                    border-dashed
+                    border-mackerel-200"
+                >
+                </div>
+            {% endif %}
+            <div class="relative z-10 max-w-[636px] pt-5 rich-text">
+                {{ page.introduction|richtext }}
+            </div>
+            {% if page.hero_cta %}
+                <div class="relative z-10 pt-10">
+                    {% include "components/button.html" with title=page.hero_cta.0.value.get_title url=page.hero_cta.0.value.get_url %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include_block page.body %}
+
+    <section class="site-padding site-container home-module">
+        <div class="flex items-end justify-between gap-6">
+            <div>
+                <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">News</p>
+                <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">新闻动态</h2>
+            </div>
+            <a class="font-codepro underline underline-offset-8" href="/news/">查看全部</a>
+        </div>
+        <div class="grid home-module-grid pt-10 md:grid-cols-2 xl:grid-cols-3">
+            {% for item in latest_news %}
+                <article class="home-news-card rounded-3xl border border-mackerel-200 p-7 bg-white/80">
+                    <p class="home-news-line">
+                        <span class="home-news-date">{{ item.publication_date|default:item.first_published_at|date:"Y-m-d" }}</span>
+                        <a href="{% pageurl item %}" class="home-news-title hover:text-mackerel-300">{{ item.title }}</a>
+                    </p>
+                    {% if item.introduction %}
+                        <p class="home-news-summary">{{ item.introduction }}</p>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <p class="pt-8 opacity-70">后台添加新闻后，这里会自动显示最新内容。</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="site-padding site-container home-module">
+        <div class="flex items-end justify-between gap-6">
+            <div>
+                <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">Faculty</p>
+                <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">师资力量</h2>
+            </div>
+            <a class="font-codepro underline underline-offset-8" href="/faculty/">查看全部</a>
+        </div>
+        <div class="grid home-module-grid pt-10 md:grid-cols-2 xl:grid-cols-3">
+            {% for member in featured_faculty %}
+                <article class="min-h-44 rounded-3xl border border-mackerel-200 p-7 bg-white/80">
+                    {% if member.photo %}
+                        {% image member.photo fill-480x320 class="w-full h-56 object-cover rounded-2xl" %}
+                    {% endif %}
+                    <h3 class="text-2xl font-semibold pt-5">
+                        <a href="{% pageurl member %}" class="hover:text-mackerel-300">{{ member.title }}</a>
+                    </h3>
+                    {% if member.position or member.research_areas %}
+                        <p class="pt-3 opacity-80">{{ member.position }}{% if member.position and member.research_areas %} / {% endif %}{{ member.research_areas }}</p>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <p class="pt-8 opacity-70">后台添加教师详情页后，这里会自动显示推荐师资。</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="site-padding site-container home-module">
+        <div class="flex items-end justify-between gap-6">
+            <div>
+                <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">Research</p>
+                <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">学术科研</h2>
+            </div>
+            <a class="font-codepro underline underline-offset-8" href="/research/achievements/">查看成果</a>
+        </div>
+        <div class="grid home-module-grid pt-10 md:grid-cols-2">
+            {% for item in featured_achievements %}
+                <article class="home-news-card rounded-3xl border border-mackerel-200 p-7 bg-white/80">
+                    <p class="home-news-line">
+                        <span class="home-news-date">
+                            {% if item.achievement_date %}{{ item.achievement_date|date:"Y-m-d" }}{% else %}{{ item.get_achievement_type_display }}{% endif %}
+                        </span>
+                        <a href="{% pageurl item %}" class="home-news-title hover:text-mackerel-300">{{ item.title }}</a>
+                    </p>
+                    {% if item.summary %}
+                        <p class="home-news-summary">{{ item.summary }}</p>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <p class="pt-8 opacity-70">后台添加科研成果后，这里会自动显示推荐内容。</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% include "components/related-pages.html" %}
+
+{% endblock %}

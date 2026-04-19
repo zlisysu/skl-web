@@ -1,0 +1,52 @@
+{% extends "base_page.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+    {% include "navigation/breadcrumbs.html" %}
+    <section class="site-padding site-container">
+        <div class="flex flex-col md:flex-row md:items-center py-20">
+            <h1 class="page-heading page-heading-column text-center {% if page.introduction %}md:border-r-[1px] border-grey-200{% endif %}">
+                {{ page.title }}
+            </h1>
+            <div class="pt-5 md:w-2/3 md:pl-10 lg:pl-12 flex flex-col items-center text-center gap-2.5">
+                {% if page.introduction %}
+                    <div class="rich-text">{{ page.introduction|richtext }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="site-padding site-container pb-24">
+        <div class="border-t border-mackerel-200 pt-12">
+            <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">
+                Achievements
+            </p>
+            <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">
+                栏目内容
+            </h2>
+        </div>
+
+        <div class="grid gap-7 lg:gap-8 pt-10">
+            {% for item in achievements %}
+                <article class="min-h-52 rounded-3xl border border-mackerel-200 bg-white/80 p-7 md:p-8 transition hover:-translate-y-1 hover:shadow-xl dark:bg-mackerel-500/40">
+                    <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                        <div>
+                            <p class="font-codepro text-sm uppercase tracking-[0.15em] opacity-60">{{ item.get_achievement_type_display }}</p>
+                            <h2 class="text-3xl font-semibold pt-3">
+                                <a href="{% pageurl item %}" class="hover:text-mackerel-300">{{ item.title }}</a>
+                            </h2>
+                        </div>
+                        {% if item.achievement_date %}
+                            <p class="text-sm opacity-70">{{ item.achievement_date|date:"Y-m-d" }}</p>
+                        {% endif %}
+                    </div>
+                    {% if item.summary %}
+                        <p class="pt-5 leading-7 opacity-80">{{ item.summary }}</p>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <p class="opacity-70">该栏目暂无科研成果。</p>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

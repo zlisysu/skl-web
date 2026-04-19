@@ -1,0 +1,71 @@
+{% extends "base_page.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+    {% include "navigation/breadcrumbs.html" %}
+    <section class="site-padding site-container">
+        <div class="flex flex-col md:flex-row md:items-center py-20">
+            <h1 class="page-heading page-heading-column text-center {% if page.introduction or faculty_groups %}md:border-r-[1px] border-grey-200{% endif %}">
+                {{ page.title }}
+            </h1>
+            <div class="pt-5 md:w-2/3 md:pl-10 lg:pl-12 flex flex-col items-center text-center gap-2.5">
+                {% if page.introduction %}
+                    <div class="rich-text">{{ page.introduction|richtext }}</div>
+                {% endif %}
+                {% if faculty_groups %}
+                    <div class="flex flex-wrap justify-center pt-7 gap-2.5">
+                        <a href="{% pageurl page %}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_group %}bg-white dark:bg-mackerel-400 text-mackerel-300 dark:text-white border-mackerel-300 dark:border-white{% else %}bg-mackerel-300 dark:bg-white text-white dark:text-mackerel-400 border-mackerel-300 dark:border-white{% endif %}">
+                            All
+                        </a>
+                        {% for group in faculty_groups %}
+                            <a href="{% pageurl page %}?group={{ group.slug }}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_group == group.slug %}bg-mackerel-300 dark:bg-white text-white dark:text-mackerel-400 border-mackerel-300 dark:border-white{% else %}bg-white dark:bg-mackerel-400 text-mackerel-300 dark:text-white border-mackerel-300 dark:border-white{% endif %}">
+                                {{ group.title }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="site-padding site-container pb-24">
+        <div class="border-t border-mackerel-200 pt-12">
+            <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">
+                        Faculty
+                    </p>
+                    <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">
+                        栏目内容
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid listing-grid pt-10 md:grid-cols-2 xl:grid-cols-3">
+            {% for member in faculty_members %}
+                <article class="faculty-card">
+                    <div class="faculty-card-media">
+                        {% if member.photo %}
+                            {% image member.photo fill-520x520 class="faculty-card-image" %}
+                        {% endif %}
+                    </div>
+                    <div class="faculty-card-body">
+                        <p class="faculty-card-meta">{{ member.get_faculty_group_display }}</p>
+                        <h2 class="faculty-card-title">
+                            <a href="{% pageurl member %}" class="faculty-card-link">{{ member.title }}</a>
+                        </h2>
+                        {% if member.position or member.academic_title %}
+                            <p class="faculty-card-summary">{{ member.position }}{% if member.position and member.academic_title %} / {% endif %}{{ member.academic_title }}</p>
+                        {% endif %}
+                        {% if member.research_areas %}
+                            <p class="faculty-card-summary">{{ member.research_areas }}</p>
+                        {% endif %}
+                    </div>
+                </article>
+            {% empty %}
+                <p class="opacity-70">该栏目暂无师资信息。</p>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

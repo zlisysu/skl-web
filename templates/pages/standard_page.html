@@ -1,0 +1,145 @@
+
+{% extends "base_page.html" %}
+{% load wagtailcore_tags wagtailimages_tags static %}
+
+{% block content %}
+    {% block breadcrumbs %}
+        {% include "navigation/breadcrumbs.html" %}
+    {% endblock %}
+    {% if is_standard_detail_page %}
+        <div class="site-padding site-container gap-10 pt-20 md:pt-28 tall:md:pt-40 pb-10 md:pb-20 flex flex-col lg:flex-row">
+            <div class="max-w-[872px]">
+                <p class="text-sm md:text-base text-grey-700 dark:text-grey-200 font-codepro pt-0 pb-10">
+                    <span class="text-sm md:text-base text-mackerel-300 font-medium uppercase">
+                        {{ page.get_parent.specific.title }}
+                    </span>
+                </p>
+                <h1 class="font-serif4 font-bold text-4xl lg:text-7xl">
+                    {{ page.title }}
+                </h1>
+                {% if page.introduction %}
+                    <p class="pt-7 rich-text">
+                        {{ page.introduction|richtext }}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+    <div class="site-padding site-container">
+        <div class="flex flex-col md:flex-row md:items-center py-20">
+            <h1 class="page-heading page-heading-column text-center {% if page.introduction or section_filters %}md:border-r-[1px] border-grey-200{% endif %}">
+                {{ page.title }}
+            </h1>
+            <div class="pt-5 md:w-2/3 md:pl-10 lg:pl-12 flex flex-col items-center text-center gap-2.5">
+                {% if page.introduction %}
+                    <div class="rich-text">
+                        {{ page.introduction|richtext }}
+                    </div>
+                {% endif %}
+                {% if section_filters %}
+                    <div class="flex flex-wrap justify-center pt-7 gap-2.5">
+                        <a href="{% pageurl page %}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_section %}bg-white dark:bg-mackerel-400 text-mackerel-300 dark:text-white border-mackerel-300 dark:border-white{% else %}bg-mackerel-300 dark:bg-white text-white dark:text-mackerel-400 border-mackerel-300 dark:border-white{% endif %}">
+                            All
+                        </a>
+                        {% for section in section_filters %}
+                            <a href="{% pageurl page %}?section={{ section.slug }}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_section == section.slug %}bg-mackerel-300 dark:bg-white text-white dark:text-mackerel-400 border-mackerel-300 dark:border-white{% else %}bg-white dark:bg-mackerel-400 text-mackerel-300 dark:text-white border-mackerel-300 dark:border-white{% endif %}">
+                                {{ section.title }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% include_block page.body %}
+
+    {% if section_listing_pages and not is_standard_detail_page %}
+            <section class="site-padding site-container pb-24">
+                <div class="border-t border-mackerel-200 pt-12">
+                    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                        <div>
+                            <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">
+                                Sections
+                            </p>
+                            <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">
+                                栏目内容
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="grid listing-grid pt-10 {% if section_filters and page.slug != "research" %}md:grid-cols-2 xl:grid-cols-3{% elif page.slug == "research" %}md:grid-cols-2{% endif %}">
+                        {% for child in section_listing_pages %}
+                            {% if section_filters %}
+                            {% if page.slug == "research" %}
+                            <article class="research-card">
+                                <div class="research-card-meta">
+                                    <span>
+                                        {% if child.get_parent.id == page.id %}{{ child.title }}{% else %}{{ child.get_parent.specific.title }}{% endif %}
+                                    </span>
+                                    {% if child.first_published_at %}
+                                        <span class="research-card-date">{{ child.first_published_at|date:"Y-m-d" }}</span>
+                                    {% endif %}
+                                </div>
+                                <h3 class="research-card-title">
+                                    <a href="{% pageurl child %}" class="research-card-link">
+                                        {% firstof child.listing_title child.title %}
+                                    </a>
+                                </h3>
+                                {% firstof child.listing_summary child.summary child.plain_introduction as child_summary %}
+                                {% if child_summary %}
+                                    <p class="research-card-summary">
+                                        {{ child_summary }}
+                                    </p>
+                                {% endif %}
+                            </article>
+                            {% else %}
+                            <article class="section-card">
+                                <p class="section-card-meta">
+                                    {{ child.specific_class.get_verbose_name }}
+                                </p>
+                                <h3 class="section-card-title">
+                                    <a href="{% pageurl child %}" class="section-card-link">
+                                        {% firstof child.listing_title child.title %}
+                                    </a>
+                                </h3>
+                                {% firstof child.listing_summary child.plain_introduction as child_summary %}
+                                {% if child_summary %}
+                                    <p class="section-card-summary">
+                                        {{ child_summary }}
+                                    </p>
+                                {% endif %}
+                            </article>
+                            {% endif %}
+                            {% else %}
+                            <article class="section-card">
+                                <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                                    <div>
+                                        <p class="section-card-meta">
+                                            {{ page.title }}
+                                        </p>
+                                        <h2 class="section-card-title">
+                                            <a href="{% pageurl child %}" class="section-card-link">
+                                                {% firstof child.listing_title child.title %}
+                                            </a>
+                                        </h2>
+                                    </div>
+                                </div>
+                                {% firstof child.listing_summary child.plain_introduction as child_summary %}
+                                {% if child_summary %}
+                                    <p class="section-card-summary">
+                                        {{ child_summary }}
+                                    </p>
+                                {% endif %}
+                            </article>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+    {% endif %}
+
+    {% include "components/related-pages.html" %}
+
+{% endblock %}

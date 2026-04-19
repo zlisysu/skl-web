@@ -1,0 +1,58 @@
+{% extends "base_page.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+    {% include "navigation/breadcrumbs.html" %}
+    <section class="site-padding site-container pt-20 pb-24">
+        <div class="grid gap-10 lg:grid-cols-[360px_minmax(0,1fr)]">
+            <div>
+                {% if page.photo %}
+                    {% image page.photo fill-720x900 class="w-full rounded-3xl object-cover" %}
+                {% endif %}
+            </div>
+            <div>
+                <p class="font-codepro text-sm uppercase tracking-[0.2em] opacity-60">{{ page.get_faculty_group_display }}</p>
+                <h1 class="font-serif4 text-5xl md:text-7xl font-bold pt-4">{{ page.title }}</h1>
+                {% if page.name_en %}
+                    <p class="pt-3 text-xl opacity-70">{{ page.name_en }}</p>
+                {% endif %}
+                <div class="pt-8 space-y-3 text-lg">
+                    {% if page.position %}<p><strong>职务：</strong>{{ page.position }}</p>{% endif %}
+                    {% if page.academic_title %}<p><strong>职称：</strong>{{ page.academic_title }}</p>{% endif %}
+                    {% if page.research_areas %}<p><strong>研究方向：</strong>{{ page.research_areas }}</p>{% endif %}
+                    {% if page.email %}<p><strong>邮箱：</strong>{{ page.email }}</p>{% endif %}
+                    {% if page.phone %}<p><strong>电话：</strong>{{ page.phone }}</p>{% endif %}
+                    {% if page.office %}<p><strong>办公地点：</strong>{{ page.office }}</p>{% endif %}
+                </div>
+
+                {% if page.biography %}
+                    <section class="pt-10">
+                        <h2 class="text-3xl font-semibold">个人简介</h2>
+                        <div class="rich-text pt-5">{{ page.biography|richtext }}</div>
+                    </section>
+                {% endif %}
+
+                {% if page.education %}
+                    <section class="pt-10">
+                        <h2 class="text-3xl font-semibold">教育经历</h2>
+                        <div class="rich-text pt-5">{{ page.education|richtext }}</div>
+                    </section>
+                {% endif %}
+
+                {% if page.representative_works %}
+                    <section class="pt-10">
+                        <h2 class="text-3xl font-semibold">代表成果</h2>
+                        <div class="rich-text pt-5">{{ page.representative_works|richtext }}</div>
+                    </section>
+                {% endif %}
+
+                {% if page.awards %}
+                    <section class="pt-10">
+                        <h2 class="text-3xl font-semibold">奖励荣誉</h2>
+                        <div class="rich-text pt-5">{{ page.awards|richtext }}</div>
+                    </section>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
