@@ -4,64 +4,36 @@
 
 {% block content %}
     <div class="site-padding site-container">
-        <div class="relative max-w-[872px] pt-32 tall:pt-40 pb-40 md:pb-60">
-            <h1 class="relative z-10 font-serif4 [word-spacing:-6px] font-bold text-7xl lg:text-10xl">
-                {{ page.title }}
-            </h1>
+        <div class="home-hero relative pt-24 md:pt-28 tall:pt-40 pb-20 md:pb-28">
+            <div class="home-hero-grid">
+                <div class="relative max-w-[872px]">
+                    <p class="home-kicker">National Key Laboratory</p>
+                    <h1 class="relative z-10 font-serif4 [word-spacing:-6px] font-bold text-6xl md:text-8xl lg:text-10xl">
+                        {{ page.title }}
+                    </h1>
 
-            {% if page.hero_image %}
-                <div class="
-                    absolute
-                    overflow-hidden
-                    z-0
-                    right-[-78px]
-                    top-[98px]
-                    w-52
-                    h-52
-                    md:right-[-131px]
-                    md:top-[24px]
-                    tall:md:top-[131px]
-                    md:w-64
-                    md:h-64
-                    rotate-[8deg]
-                    rounded-3xl
-                    border-[3px]
-                    border-dashed
-                    border-mackerel-200
-                    bg-white
-                    shadow-xl">
-                    {% image page.hero_image fill-640x640 class="w-full h-full object-cover" %}
+                    {% if page.hero_image %}
+                        <div class="home-hero-image home-hero-image-has-media">
+                            {% image page.hero_image fill-900x900 class="w-full h-full object-cover" %}
+                        </div>
+                    {% else %}
+                        <div class="home-hero-image"></div>
+                    {% endif %}
+                    <div class="relative z-10 max-w-[636px] pt-5 rich-text">
+                        {% if page.introduction %}
+                            {{ page.introduction|richtext }}
+                        {% else %}
+                            <p>立足国家医药健康重大战略需求，面向创新药物研发前沿，建设集科学研究、技术创新、人才培养与开放共享于一体的高水平药学研究平台。</p>
+                        {% endif %}
+                    </div>
+                    {% if page.hero_cta %}
+                        <div class="relative z-10 pt-10">
+                            {% include "components/button.html" with title=page.hero_cta.0.value.get_title url=page.hero_cta.0.value.get_url %}
+                        </div>
+                    {% endif %}
                 </div>
-            {% else %}
-                <div class="
-                    absolute
-                    overflow-hidden
-                    z-0
-                    right-[-78px]
-                    top-[98px]
-                    w-52
-                    h-52
-                    md:right-[-131px]
-                    md:top-[24px]
-                    tall:md:top-[131px]
-                    md:w-64
-                    md:h-64
-                    rotate-[32deg]
-                    border-[3px]
-                    rounded-3xl
-                    border-dashed
-                    border-mackerel-200"
-                >
-                </div>
-            {% endif %}
-            <div class="relative z-10 max-w-[636px] pt-5 rich-text">
-                {{ page.introduction|richtext }}
+
             </div>
-            {% if page.hero_cta %}
-                <div class="relative z-10 pt-10">
-                    {% include "components/button.html" with title=page.hero_cta.0.value.get_title url=page.hero_cta.0.value.get_url %}
-                </div>
-            {% endif %}
         </div>
     </div>
 

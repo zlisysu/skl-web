@@ -32,7 +32,7 @@ class HomePage(BasePage):
         min_num=0,
         max_num=1,
     )
-    body = StreamField(StoryBlock())
+    body = StreamField(StoryBlock(), blank=True)
     featured_section_title = models.TextField(blank=True)
 
     search_fields = BasePage.search_fields + [index.SearchField("introduction")]
@@ -81,25 +81,5 @@ class HomePage(BasePage):
             .specific()
             .select_related("listing_image")
             .order_by("-is_featured", "-achievement_date", "title")[:4]
-        )
-        top_sections = list(self.get_children().live().public().specific())
-        about_page = next((item for item in top_sections if item.slug == "about"), None)
-        research_page = next((item for item in top_sections if item.slug == "research"), None)
-        context["top_sections"] = top_sections
-        context["about_page"] = about_page
-        context["about_highlights"] = (
-            list(about_page.get_children().live().public().specific()[:4]) if about_page else []
-        )
-        context["quick_links"] = [
-            item for item in top_sections if item.slug in {"party-building", "faculty", "news", "research", "contact"}
-        ]
-        context["hero_stats"] = [
-            {"label": "栏目", "value": len(top_sections)},
-            {"label": "新闻", "value": ArticlePage.objects.live().public().count()},
-            {"label": "师资", "value": FacultyPage.objects.live().public().count()},
-            {"label": "成果", "value": AchievementPage.objects.live().public().count()},
-        ]
-        context["research_highlights"] = (
-            list(research_page.get_children().live().public().specific()[:3]) if research_page else []
         )
         return context
