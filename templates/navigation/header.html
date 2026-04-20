@@ -1,19 +1,43 @@
 
-{% load wagtailcore_tags wagtailsettings_tags %}
+{% load wagtailcore_tags wagtailsettings_tags wagtailimages_tags static %}
 {% wagtail_site as current_site %}
+{% with nav_settings=settings.navigation.NavigationSettings %}
 
 
-<header class="site-container w-full px-10 pt-14 pb-8 md:py-8 md:px-20">
-    <div class="flex justify-between items-center ">
+<header class="site-header site-container w-full" data-responsive-header>
+    <div class="site-header-bar" data-header-bar>
         <a 
             href="/"
             data-header-logo
-            class="header-logo z-30 uppercase font-semibold text-3xl">
-            {{ current_site.site_name|default:"Site name" }}
+            class="header-logo z-30">
+            <span class="header-brand-topline">
+                <span class="header-brand-mark">
+                    {% if nav_settings.brand_logo %}
+                        {% image nav_settings.brand_logo width-280 class="header-brand-image" %}
+                    {% else %}
+                        <img class="header-brand-image" src="{% static 'images/brand/skl.png' %}" alt="" width="280" height="77">
+                    {% endif %}
+                </span>
+                <span class="header-brand-copy">
+                    {% if nav_settings.brand_title or nav_settings.brand_title_second_line %}
+                        {% if nav_settings.brand_title %}
+                            <span class="header-brand-title">{{ nav_settings.brand_title }}</span>
+                        {% endif %}
+                        {% if nav_settings.brand_title_second_line %}
+                            <span class="header-brand-title">{{ nav_settings.brand_title_second_line }}</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="header-brand-title">{{ current_site.site_name|default:"Site name" }}</span>
+                    {% endif %}
+                </span>
+            </span>
+            {% if nav_settings.brand_subtitle %}
+                <span class="header-brand-subtitle">{{ nav_settings.brand_subtitle }}</span>
+            {% endif %}
         </a>
 
         
-        <div class="flex md:hidden items-center gap-4">
+        <div class="header-menu-toggle-wrap">
             <button 
                 class="z-30 button-menu-toggle" 
                 data-mobile-menu-toggle
@@ -28,18 +52,19 @@
         </div>
         
         
-        <nav aria-label="Primary" class="hidden md:block">
-            <ul class="flex gap-x-12 lg:gap-x-14">
+        <nav aria-label="Primary" class="header-primary-nav" data-header-primary-nav>
+            <ul class="header-nav-list flex">
                 {% for link in settings.navigation.NavigationSettings.primary_navigation %}
                     <li>
                         {% if link.value.page %}
                             <a 
                                 class="
-                                flex 
-                                text-base 
+                                header-nav-link
+                                flex
                                 items-center 
                                 font-semibold 
                                 font-codepro
+                                whitespace-nowrap
                                 underline
                                 underline-offset-8
                                 decoration-[1.5px]
@@ -78,7 +103,7 @@
     
     <section 
         class="
-        md:hidden 
+        header-mobile-menu
         invisible 
         transition-all 
         duration-[640ms] 
@@ -155,3 +180,4 @@
         {% include "components/search.html" with variant="search-panel" %}
     </div>
 </header>
+{% endwith %}
