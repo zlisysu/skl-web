@@ -59,10 +59,10 @@ w-full h-full group
         md:max-w-[767px]
     ">
         {% if page.display_date %}
-            <p class="text-sm md:text-base text-grey-700 dark:text-grey-200 font-codepro pt-7 md:pt-0 pb-2.5">
+            <p class="text-sm md:text-base text-grey-700 font-codepro pt-7 md:pt-0 pb-2.5">
                 <span class="text-sm md:text-base text-mackerel-300 font-medium uppercase mr-1">
                     {{ page.topic }}
-                </span>{% include "icons/slash.html" with class="inline fill-current w-2.5 h-2.5" %}{% include "icons/slash.html" with class="inline fill-current w-2.5 h-2.5" %}<span class="text-sm md:text-base text-grey-700 dark:text-grey-200 ml-1">
+                </span>{% include "icons/slash.html" with class="inline fill-current w-2.5 h-2.5" %}{% include "icons/slash.html" with class="inline fill-current w-2.5 h-2.5" %}<span class="text-sm md:text-base text-grey-700 ml-1">
                     {{ page.display_date }}
                 </span>
             </p>
@@ -80,11 +80,11 @@ w-full h-full group
         >
             {% firstof page.listing_title page.title %}
         </a>
-        <p class="text-grey-700 dark:text-grey-200 pt-2.5 leading-6">
+        <p class="text-grey-700 pt-2.5 leading-6">
             {% firstof page.listing_summary page.plain_introduction %}
         </p>
         {% if page.author %}
-            <div class="flex flex-row items-center gap-3 text-sm md:text-base text-grey-700 dark:text-grey-200 font-codepro pt-7">
+            <div class="flex flex-row items-center gap-3 text-sm md:text-base text-grey-700 font-codepro pt-7">
                 {% image page.author.image format-webp fill-60x60 gray as author_avatar %}
 
             <img
@@ -99,4 +99,3 @@ w-full h-full group
         {% endif %}
     </div>
 </div>
-

@@ -17,7 +17,7 @@
         md:flex-col
         md:max-w-[767px]
     ">
-        <p class="text-sm md:text-base text-grey-700 dark:text-grey-200 font-codepro pt-7 md:pt-0 pb-2.5">
+        <p class="text-sm md:text-base text-grey-700 font-codepro pt-7 md:pt-0 pb-2.5">
 
             <span class="text-sm md:text-base text-mackerel-300 font-medium uppercase">
                 {% if page.topic %}
@@ -28,10 +28,10 @@
             </span>
             {% if page.display_date %}
                 <span aria-hidden="true"
-                    class="line-through decoration-white dark:decoration-mackerel-400 decoration-4 text-grey-700 dark:text-grey-200">
+                    class="line-through decoration-white decoration-4 text-grey-700">
                     //
                 </span>
-                <span class="text-sm md:text-base text-grey-700 dark:text-grey-200">
+                <span class="text-sm md:text-base text-grey-700">
                     {{ page.display_date }}
                 </span>
             {% endif %}
@@ -50,9 +50,8 @@
         >
             {% firstof page.listing_title page.title %}
         </a>
-        <p class="text-grey-700 dark:text-grey-200 pt-2.5 leading-6">
+        <p class="text-grey-700 pt-2.5 leading-6">
             {% firstof page.listing_summary page.plain_introduction %}
         </p>
     </div>
 </div>
-

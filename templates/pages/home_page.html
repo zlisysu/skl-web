@@ -205,25 +205,81 @@
                     </div>
                     <a class="home-module-link" href="/research/achievements/">查看成果</a>
                 </div>
-                <div class="grid home-module-grid md:grid-cols-2">
-                    {% for item in featured_achievements %}
-                        <article class="home-news-card home-research-card">
-                            <div class="home-news-line">
-                                <span class="home-news-date">
-                                    {% if item.achievement_date %}{{ item.achievement_date|date:"Y-m-d" }}{% else %}{{ item.get_achievement_type_display }}{% endif %}
-                                </span>
-                                <h3 class="home-news-heading">
-                                    <a href="{% pageurl item %}" class="home-news-title">{{ item.title }}</a>
-                                </h3>
+                {% if featured_achievements %}
+                    <div class="home-news-showcase home-research-showcase" data-home-news-carousel>
+                        <div class="home-news-visual-stage">
+                            {% for item in featured_achievements %}
+                                {% if item.listing_image %}
+                                    {% image item.listing_image fill-1200x760 as research_visual %}
+                                {% else %}
+                                    {% image settings.utils.SystemMessagesSettings.get_placeholder_image fill-1200x760 as research_visual %}
+                                {% endif %}
+                                <a
+                                    href="{% pageurl item %}"
+                                    class="home-news-visual-slide{% if forloop.first %} is-active{% endif %}"
+                                    data-home-news-slide
+                                    data-slide-index="{{ forloop.counter0 }}"
+                                    aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+                                >
+                                    <img
+                                        src="{{ research_visual.url }}"
+                                        width="{{ research_visual.width }}"
+                                        height="{{ research_visual.height }}"
+                                        alt="{% firstof research_visual.alt item.title %}"
+                                        class="home-news-visual-image"
+                                        {% if research_visual.focal_point %}
+                                        style="{{ research_visual.object_position_style }}"
+                                        {% endif %}
+                                    >
+                                    <span class="home-news-visual-overlay"></span>
+                                    <span class="home-news-visual-copy">
+                                        <span class="home-news-visual-date">
+                                            {% if item.achievement_date %}{{ item.achievement_date|date:"Y-m-d" }}{% else %}{{ item.get_achievement_type_display }}{% endif %}
+                                        </span>
+                                        <span class="home-news-visual-title">{{ item.title }}</span>
+                                    </span>
+                                </a>
+                            {% endfor %}
+                            <div class="home-news-dots" aria-label="学术科研轮播切换">
+                                {% for item in featured_achievements %}
+                                    <button
+                                        type="button"
+                                        class="home-news-dot{% if forloop.first %} is-active{% endif %}"
+                                        data-home-news-dot
+                                        data-slide-index="{{ forloop.counter0 }}"
+                                        aria-label="切换到第 {{ forloop.counter }} 条科研成果"
+                                        aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                                    ></button>
+                                {% endfor %}
                             </div>
-                            {% if item.summary %}
-                                <p class="home-news-summary">{{ item.summary }}</p>
-                            {% endif %}
-                        </article>
-                    {% empty %}
-                        <p class="pt-8 opacity-70">后台添加科研成果后，这里会自动显示推荐内容。</p>
-                    {% endfor %}
-                </div>
+                        </div>
+                        <div class="home-news-list" role="list">
+                            {% for item in featured_achievements %}
+                                <article
+                                    class="home-news-card home-news-card--list home-research-card{% if forloop.first %} is-active{% endif %}"
+                                    data-home-news-item
+                                    data-slide-index="{{ forloop.counter0 }}"
+                                >
+                                    <a href="{% pageurl item %}" class="home-news-card-link">
+                                        <div class="home-news-line">
+                                            <span class="home-news-date">
+                                                {% if item.achievement_date %}{{ item.achievement_date|date:"Y-m-d" }}{% else %}{{ item.get_achievement_type_display }}{% endif %}
+                                            </span>
+                                            <h3 class="home-news-heading">
+                                                <span class="home-news-title">{{ item.title }}</span>
+                                            </h3>
+                                        </div>
+                                        {% if item.summary %}
+                                            <p class="home-news-summary">{{ item.summary }}</p>
+                                        {% endif %}
+                                    </a>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="pt-8 opacity-70">后台添加科研成果后，这里会自动显示推荐内容。</p>
+                {% endif %}
             </div>
         </section>
 

@@ -5,13 +5,13 @@
     {% include "navigation/breadcrumbs.html" %}
     <div class="site-padding site-container gap-10 pt-20 md:pt-28 tall:md:pt-40 pb-10 md:pb-20 flex flex-col lg:flex-row">
         <div class="max-w-[872px]">
-            <p class="text-sm md:text-base text-grey-700 dark:text-grey-200 font-codepro pt-0 pb-10">
+            <p class="text-sm md:text-base text-grey-700 font-codepro pt-0 pb-10">
                 <span class="text-sm md:text-base text-mackerel-300 font-medium uppercase">
                     {{ page.get_achievement_type_display }}
                 </span>
                 {% if page.achievement_date %}
                     {% include "icons/slash.html" with class="inline fill-current w-4 h-4" %}{% include "icons/slash.html" with class="inline -ml-1 fill-current w-4 h-4" %}
-                    <span class="text-sm md:text-base text-grey-700 dark:text-grey-200">
+                    <span class="text-sm md:text-base text-grey-700">
                         {{ page.achievement_date|date:"Y-m-d" }}
                     </span>
                 {% endif %}
@@ -21,7 +21,7 @@
                 <div class="pt-7 rich-text">{{ page.summary }}</div>
             {% endif %}
         </div>
-        <div class="lg:self-end lg:ml-auto text-sm md:text-base text-grey-700 dark:text-grey-200 font-codepro">
+        <div class="lg:self-end lg:ml-auto text-sm md:text-base text-grey-700 font-codepro">
             {% if page.responsible_team %}
                 <p class="font-medium text-mackerel-300">{{ page.responsible_team }}</p>
             {% endif %}

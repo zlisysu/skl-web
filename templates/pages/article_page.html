@@ -8,10 +8,10 @@
 {% endblock %}
 <div class="site-padding site-container gap-10 pt-20 md:pt-28 tall:md:pt-40 pb-10 md:pb-20 flex flex-col lg:flex-row">
     <div class="max-w-[872px]">
-        <p class="text-sm md:text-base text-grey-700 dark:text-grey-200 font-codepro pt-0 pb-10">
+        <p class="text-sm md:text-base text-grey-700 font-codepro pt-0 pb-10">
             <span class="text-sm md:text-base text-mackerel-300 font-medium uppercase">
                 {{ page.topic }}
-            </span>{% include "icons/slash.html" with class="inline fill-current w-4 h-4" %}{% include "icons/slash.html" with class="inline -ml-1 fill-current w-4 h-4" %}<span class="text-sm md:text-base text-grey-700 dark:text-grey-200">
+            </span>{% include "icons/slash.html" with class="inline fill-current w-4 h-4" %}{% include "icons/slash.html" with class="inline -ml-1 fill-current w-4 h-4" %}<span class="text-sm md:text-base text-grey-700">
                 {{ page.display_date }}
             </span>
         </p>
@@ -23,7 +23,7 @@
             {{ page.introduction|richtext }}
         </p>
     </div>
-    <div class="lg:self-end lg:ml-auto flex flex-row items-center gap-3 text-sm md:text-base text-grey-700 dark:text-grey-200 font-codepro">
+    <div class="lg:self-end lg:ml-auto flex flex-row items-center gap-3 text-sm md:text-base text-grey-700 font-codepro">
         {% image page.author.image format-webp fill-60x60 gray as author_avatar %}
         <img
         src="{{ author_avatar.url }}"
@@ -72,4 +72,3 @@
 {% include "components/related-pages.html" %}
 
 {% endblock %}
-

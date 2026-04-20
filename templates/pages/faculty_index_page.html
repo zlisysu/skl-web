@@ -14,11 +14,11 @@
                 {% endif %}
                 {% if faculty_groups %}
                     <div class="flex flex-wrap justify-center pt-7 gap-2.5">
-                        <a href="{% pageurl page %}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_group %}bg-white dark:bg-mackerel-400 text-mackerel-300 dark:text-white border-mackerel-300 dark:border-white{% else %}bg-mackerel-300 dark:bg-white text-white dark:text-mackerel-400 border-mackerel-300 dark:border-white{% endif %}">
+                        <a href="{% pageurl page %}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_group %}bg-white text-mackerel-300 border-mackerel-300{% else %}bg-mackerel-300 text-white border-mackerel-300{% endif %}">
                             All
                         </a>
                         {% for group in faculty_groups %}
-                            <a href="{% pageurl page %}?group={{ group.slug }}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_group == group.slug %}bg-mackerel-300 dark:bg-white text-white dark:text-mackerel-400 border-mackerel-300 dark:border-white{% else %}bg-white dark:bg-mackerel-400 text-mackerel-300 dark:text-white border-mackerel-300 dark:border-white{% endif %}">
+                            <a href="{% pageurl page %}?group={{ group.slug }}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_group == group.slug %}bg-mackerel-300 text-white border-mackerel-300{% else %}bg-white text-mackerel-300 border-mackerel-300{% endif %}">
                                 {{ group.title }}
                             </a>
                         {% endfor %}

@@ -35,7 +35,7 @@
     }
 
     body {
-        @apply flex flex-col min-h-screen text-mackerel-400 dark:text-white bg-white dark:bg-mackerel-400 overflow-x-hidden;
+        @apply flex flex-col min-h-screen text-mackerel-400 bg-white overflow-x-hidden;
     }
 
     a,
@@ -897,7 +897,7 @@
     .section-card,
     .faculty-card,
     .research-card {
-        @apply rounded-3xl border border-mackerel-200 bg-white/80 transition hover:-translate-y-1 hover:shadow-xl dark:bg-mackerel-100;
+        @apply rounded-3xl border border-mackerel-200 bg-white/80 transition hover:-translate-y-1 hover:shadow-xl;
         padding: 1.25rem 1.5rem;
     }
 
@@ -987,7 +987,7 @@
     .section-card-meta,
     .faculty-card-meta,
     .research-card-meta {
-        @apply font-codepro text-sm text-grey-700 dark:text-grey-200;
+        @apply font-codepro text-sm text-grey-700;
         letter-spacing: 0.12em;
         opacity: 0.72;
     }
@@ -1025,7 +1025,7 @@
     .section-card-summary,
     .faculty-card-summary,
     .research-card-summary {
-        @apply text-grey-700 dark:text-grey-200;
+        @apply text-grey-700;
         padding-top: 0.625rem;
         line-height: 1.5;
         display: -webkit-box;
@@ -1163,7 +1163,7 @@
         margin: auto;
 
         &__line {
-            @apply bg-mackerel-400 dark:bg-white;
+            @apply bg-mackerel-400;
             position: absolute;
             display: block;
             width: 100%;

@@ -19,7 +19,7 @@
             {% endif %}
             {% if field_type == "text" or field_type == "email" %}
                 <input 
-                    class="text-base placeholder:text-base p-3.5 border border-mackerel-200 bg-white dark:bg-mackerel-100 dark:text-white placeholder:text-mackerel-400 dark:placeholder:text-white w-full rounded-[30px] min-h-[50px]"
+                    class="text-base placeholder:text-base p-3.5 border border-mackerel-200 bg-white placeholder:text-mackerel-400 w-full rounded-[30px] min-h-[50px]"
                     type="text"
                     name="{{ field.name }}"
                     {% if field.value %}
@@ -31,7 +31,7 @@
                 />
             {% elif field_type == "select" %}
                 <div class="relative">
-                    <select name="{{ field.name }}" class="text-base placeholder:text-base p-3.5 flex items-center border border-mackerel-200 bg-white dark:bg-mackerel-100 dark:text-white placeholder:text-mackerel-400 dark:placeholder:text-white rounded-[30px] appearance-none w-full cursor-pointer min-h-[50px]">
+                    <select name="{{ field.name }}" class="text-base placeholder:text-base p-3.5 flex items-center border border-mackerel-200 bg-white placeholder:text-mackerel-400 rounded-[30px] appearance-none w-full cursor-pointer min-h-[50px]">
                         {% if field.label %}
                         <option value="">{{ field.label }}</option>
                         {% endif %}
@@ -61,7 +61,7 @@
             <div class="flex items-center">
                 {% if field_type == "checkbox" %}
                 <div class="checkbox">
-                    <input id="{{ field.id_for_label }}" class="h-[20px] w-[20px] bg-white dark:bg-mackerel-100 accent-mackerel-300" 
+                    <input id="{{ field.id_for_label }}" class="h-[20px] w-[20px] bg-white accent-mackerel-300" 
                     type="checkbox" 
                     {% if field.checked %}checked{% endif %}
                     name="{{ field.name }}" 
@@ -72,7 +72,7 @@
                 {% elif field_type == "radio" %}
                 <input 
                     id="{{ field.id_for_label }}" 
-                    class="h-[30px] w-[30px] bg-white dark:bg-mackerel-100 accent-mackerel-300" 
+                    class="h-[30px] w-[30px] bg-white accent-mackerel-300" 
                     type="radio" 
                     name="{{ field.name }}" 
                     value="{{ field.value }}" 
@@ -86,4 +86,3 @@
         {% endif %}
     </div>
 {% endwith %}
-

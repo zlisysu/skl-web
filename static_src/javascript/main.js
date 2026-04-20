@@ -1,4 +1,3 @@
-import ThemeToggle from "./components/theme-toggle";
 import HeaderSearchPanel from "./components/header-search-panel";
 import HeaderResponsiveNav from "./components/header-responsive-nav";
 import HomeNewsCarousel from "./components/home-news-carousel";
@@ -22,7 +21,6 @@ function initComponent(ComponentClass) {
 function initApp() {
     initComponent(HeaderResponsiveNav);
     initComponent(HomeNewsCarousel);
-    initComponent(ThemeToggle);
     initComponent(SkipLink);
     initComponent(HeaderSearchPanel);
     initComponent(MobileMenu);

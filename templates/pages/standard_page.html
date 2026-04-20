@@ -9,7 +9,7 @@
     {% if is_standard_detail_page %}
         <div class="site-padding site-container gap-10 pt-20 md:pt-28 tall:md:pt-40 pb-10 md:pb-20 flex flex-col lg:flex-row">
             <div class="max-w-[872px]">
-                <p class="text-sm md:text-base text-grey-700 dark:text-grey-200 font-codepro pt-0 pb-10">
+                <p class="text-sm md:text-base text-grey-700 font-codepro pt-0 pb-10">
                     <span class="text-sm md:text-base text-mackerel-300 font-medium uppercase">
                         {{ page.get_parent.specific.title }}
                     </span>
@@ -38,11 +38,11 @@
                 {% endif %}
                 {% if section_filters %}
                     <div class="flex flex-wrap justify-center pt-7 gap-2.5">
-                        <a href="{% pageurl page %}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_section %}bg-white dark:bg-mackerel-400 text-mackerel-300 dark:text-white border-mackerel-300 dark:border-white{% else %}bg-mackerel-300 dark:bg-white text-white dark:text-mackerel-400 border-mackerel-300 dark:border-white{% endif %}">
+                        <a href="{% pageurl page %}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_section %}bg-white text-mackerel-300 border-mackerel-300{% else %}bg-mackerel-300 text-white border-mackerel-300{% endif %}">
                             All
                         </a>
                         {% for section in section_filters %}
-                            <a href="{% pageurl page %}?section={{ section.slug }}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_section == section.slug %}bg-mackerel-300 dark:bg-white text-white dark:text-mackerel-400 border-mackerel-300 dark:border-white{% else %}bg-white dark:bg-mackerel-400 text-mackerel-300 dark:text-white border-mackerel-300 dark:border-white{% endif %}">
+                            <a href="{% pageurl page %}?section={{ section.slug }}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_section == section.slug %}bg-mackerel-300 text-white border-mackerel-300{% else %}bg-white text-mackerel-300 border-mackerel-300{% endif %}">
                                 {{ section.title }}
                             </a>
                         {% endfor %}

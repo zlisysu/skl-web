@@ -22,7 +22,6 @@
                             <a href="{{ link.value.get_url }}"
                                 class="
                                 text-grey-700
-                                dark:text-grey-200
                                 underline
                                 underline-offset-8
                                 decoration-[1.5px]
@@ -49,7 +48,7 @@
                         {{ settings.utils.SystemMessagesSettings.footer_newsletter_signup_title }}
                     </h2>
                     {% if settings.utils.SystemMessagesSettings.footer_newsletter_signup_description %}
-                    <p class="pt-3 text-base md:text-lg text-grey-700 dark:text-grey-200 md:leading-[170%]">
+                    <p class="pt-3 text-base md:text-lg text-grey-700 md:leading-[170%]">
                         {{ settings.utils.SystemMessagesSettings.footer_newsletter_signup_description }}
                     </p>
                     {% endif %}
@@ -58,7 +57,7 @@
                             type="email" 
                             placeholder="Enter your email" 
                             aria-labelledby="footer-newsletter-signup-title"
-                            class="border-[1px] border-mackerel-200 rounded-[3px] px-5 md:py-2.5 md:px-5 text-base md:text-lg bg-white dark:bg-mackerel-100 dark:text-white">
+                            class="border-[1px] border-mackerel-200 rounded-[3px] px-5 md:py-2.5 md:px-5 text-base md:text-lg bg-white">
                         {% include "components/button.html" with variant="footer" title="Sign up" url=settings.utils.SystemMessagesSettings.footer_newsletter_signup_link %}
                     </div>
                 </div>
@@ -116,8 +115,7 @@
             {% endif %}
         </div>
     </div>
-    <p class="font-codepro text-base text-black dark:text-white opacity-60 pt-10 md:pt-20 mb-10 leading-6">
+    <p class="font-codepro text-base text-black opacity-60 pt-10 md:pt-20 mb-10 leading-6">
         © {% now "Y" %}  {{ current_site.site_name }}
     </p>
 </footer>
-
