@@ -53,14 +53,14 @@ class HomePage(BasePage):
         FieldPanel("body"),
         MultiFieldPanel(
             [
-                FieldPanel("featured_section_title", heading="Title"),
+                FieldPanel("featured_section_title", heading="标题"),
                 InlinePanel(
                     "page_related_pages",
-                    label="Pages",
+                    label="页面",
                     max_num=12,
                 ),
             ],
-            heading="Featured section",
+            heading="推荐内容",
         ),
     ]
 

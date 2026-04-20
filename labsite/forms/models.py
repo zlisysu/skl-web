@@ -19,16 +19,17 @@ class FormPage(AbstractEmailForm, BasePage):
     template = "pages/form_page.html"
     introduction = RichTextField(blank=True, features=["bold", "italic", "link"])
     action_text = models.CharField(
+        "提交按钮文字",
         max_length=32,
         blank=True,
-        help_text='Form action text. Defaults to "Submit"',
+        help_text='表单按钮文字；留空时默认为“提交”。',
     )
-    thank_you_text = RichTextField(blank=True)
+    thank_you_text = RichTextField("提交成功提示", blank=True)
 
     content_panels = AbstractEmailForm.content_panels + [
         FormSubmissionsPanel(),
         FieldPanel('introduction'),
-        InlinePanel('form_fields', label="Form fields"),
+        InlinePanel('form_fields', label="表单字段"),
         FieldPanel('thank_you_text'),
         MultiFieldPanel([
             FieldRowPanel([
@@ -36,5 +37,5 @@ class FormPage(AbstractEmailForm, BasePage):
                 FieldPanel('to_address', classname="col6"),
             ]),
             FieldPanel('subject'),
-        ], "Email"),
+        ], "邮件通知"),
     ]

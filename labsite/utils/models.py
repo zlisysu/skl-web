@@ -43,8 +43,9 @@ class SocialFields(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="+",
+        verbose_name="社交分享图片",
     )
-    social_text = models.CharField(max_length=255, blank=True)
+    social_text = models.CharField("社交分享文案", max_length=255, blank=True)
 
     class Meta:
         abstract = True
@@ -52,7 +53,7 @@ class SocialFields(models.Model):
     promote_panels = [
         MultiFieldPanel(
             [FieldPanel("social_image"), FieldPanel("social_text")],
-            "Social networks",
+            "社交分享",
         )
     ]
 
@@ -65,18 +66,20 @@ class ListingFields(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="+",
-        help_text="Choose the image you wish to be displayed when this page appears in listings",
+        verbose_name="列表图片",
+        help_text="该页面出现在列表中时使用的展示图片。",
     )
     listing_title = models.CharField(
+        "列表标题",
         max_length=255,
         blank=True,
-        help_text="Override the page title used when this page appears in listings",
+        help_text="用于覆盖列表中显示的页面标题。",
     )
     listing_summary = models.CharField(
+        "列表摘要",
         max_length=255,
         blank=True,
-        help_text="The text summary used when this page appears in listings. It's also used as "
-        "the description for search engines if the 'Meta description' field above is not defined.",
+        help_text="该页面出现在列表中时使用的摘要；如果上方未填写 Meta 描述，也会作为搜索引擎描述使用。",
     )
 
     class Meta:
@@ -89,7 +92,7 @@ class ListingFields(models.Model):
                 FieldPanel("listing_title"),
                 FieldPanel("listing_summary"),
             ],
-            "Listing information",
+            "列表展示信息",
         )
     ]
 
@@ -178,42 +181,52 @@ class Statistic(models.Model):
 @register_setting
 class SocialMediaSettings(BaseSiteSetting):
     twitter_handle = models.CharField(
+        "Twitter 用户名",
         max_length=255,
         blank=True,
-        help_text="Your Twitter username without the @, e.g. katyperry",
+        help_text="填写不含 @ 的 Twitter 用户名。",
     )
     linkedin_handle = models.CharField(
-        max_length=255, blank=True, help_text="Your Linkedin handle, e.g. katyperry."
+        "LinkedIn 账号",
+        max_length=255,
+        blank=True,
+        help_text="填写 LinkedIn 账号名称。",
     )
     facebook_app_id = models.CharField(
-        max_length=255, blank=True, help_text="Your Facebook app ID."
+        "Facebook 应用 ID",
+        max_length=255,
+        blank=True,
+        help_text="填写 Facebook 应用 ID。",
     )
     instagram_handle = models.CharField(
+        "Instagram 用户名",
         max_length=255,
         blank=True,
-        help_text="Your Instagram username, e.g. katyperry",
+        help_text="填写 Instagram 用户名。",
     )
     tiktok_handle = models.CharField(
+        "TikTok 用户名",
         max_length=255,
         blank=True,
-        help_text="Your TikTok username, e.g. katyperry",
+        help_text="填写 TikTok 用户名。",
     )
     default_sharing_text = models.CharField(
+        "默认分享文案",
         max_length=255,
         blank=True,
-        help_text="Default sharing text to use if social text has not been set on a page.",
+        help_text="当页面未单独设置分享文案时使用此默认值。",
     )
 
 
 @register_setting
 class SystemMessagesSettings(BaseSiteSetting):
     class Meta:
-        verbose_name = "system messages"
+        verbose_name = "系统提示"
 
-    title_404 = models.CharField("Title", max_length=255, default="Page not found")
+    title_404 = models.CharField("404 标题", max_length=255, default="页面未找到")
     body_404 = RichTextField(
-        "Text",
-        default="<p>You may be trying to find a page that doesn&rsquo;t exist or has been moved.</p>",
+        "404 文本",
+        default="<p>你访问的页面可能不存在，或已经被移动。</p>",
     )
 
     placeholder_image = models.ForeignKey(
@@ -222,23 +235,27 @@ class SystemMessagesSettings(BaseSiteSetting):
         blank=False,
         on_delete=models.SET_NULL,
         related_name="+",
-        help_text="Choose the image you wish to be displayed as a placeholder image.",
+        verbose_name="默认占位图",
+        help_text="默认展示的占位图片。",
     )
 
     footer_newsletter_signup_title = models.CharField(
+        "页脚按钮标题",
         blank=False,
         null=False,
-        default="Sign up for our newsletter",
+        default="订阅通讯",
         max_length=120,
     )
     footer_newsletter_signup_description = models.CharField(
+        "页脚说明文字",
         blank=True,
         max_length=255,
     )
     footer_newsletter_signup_link = models.URLField(
+        "页脚跳转链接",
         blank=True,
         null=True,
-        help_text="Link to the newsletter signup form. If left blank, the signup CTA will not be displayed.",
+        help_text="页脚按钮跳转链接；留空则不显示该按钮。",
     )
 
     panels = [
@@ -247,7 +264,7 @@ class SystemMessagesSettings(BaseSiteSetting):
                 FieldPanel("title_404"),
                 FieldPanel("body_404"),
             ],
-            heading="404 page",
+            heading="404 页面",
         ),
         FieldPanel("placeholder_image",),
         MultiFieldPanel(
@@ -256,7 +273,7 @@ class SystemMessagesSettings(BaseSiteSetting):
                 FieldPanel("footer_newsletter_signup_description",),
                 FieldPanel("footer_newsletter_signup_link",),
             ],
-            heading="Footer",
+            heading="页脚",
         ),
     ]
 
@@ -293,8 +310,8 @@ class BasePage(SocialFields, ListingFields, Page):
 
     appear_in_search_results = models.BooleanField(
         default=True,
-        help_text="Make this page available for indexing by search engines."
-        "If unchecked, the page will no longer be indexed by search engines.",
+        verbose_name="允许搜索引擎收录",
+        help_text="勾选后允许搜索引擎收录该页面；取消勾选后将不再建议搜索引擎索引。",
     )
 
     class Meta:
@@ -354,5 +371,5 @@ class BasePage(SocialFields, ListingFields, Page):
                     return introduction_value
 
 
-BasePage._meta.get_field("seo_title").verbose_name = "Title tag"
-BasePage._meta.get_field("search_description").verbose_name = "Meta description"
+BasePage._meta.get_field("seo_title").verbose_name = "SEO 标题"
+BasePage._meta.get_field("search_description").verbose_name = "Meta 描述"

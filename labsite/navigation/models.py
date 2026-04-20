@@ -17,30 +17,32 @@ class NavigationSettings(BaseSiteSetting, ClusterableModel):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="+",
-        help_text="Header logo image. If empty, the built-in SKL logo is used.",
+        verbose_name="页眉 Logo",
+        help_text="页眉 Logo 图片；留空时使用内置 SKL 标识。",
     )
     brand_title = models.CharField(
-        "Chinese brand title, first line",
+        "页眉中文标题第一行",
         max_length=120,
         blank=True,
-        help_text="First Chinese line shown next to the header logo.",
+        help_text="显示在页眉 Logo 右侧的中文第一行。",
     )
     brand_title_second_line = models.CharField(
-        "Chinese brand title, second line",
+        "页眉中文标题第二行",
         max_length=120,
         blank=True,
-        help_text="Second Chinese line shown next to the header logo.",
+        help_text="显示在页眉 Logo 右侧的中文第二行。",
     )
     brand_subtitle = models.CharField(
-        "English brand line",
+        "页眉英文标题",
         max_length=160,
         blank=True,
-        help_text="English line shown below the header logo and Chinese title.",
+        help_text="显示在 Logo 与中文标题下方的英文标题。",
     )
     primary_navigation = StreamField(
         [("link", InternalLinkBlock())],
         blank=True,
-        help_text="Main site navigation",
+        verbose_name="主导航",
+        help_text="网站顶部主导航。",
         
     )
     footer_navigation = StreamField(
@@ -53,6 +55,7 @@ class NavigationSettings(BaseSiteSetting, ClusterableModel):
             ])) 
         ],
         blank=True,
+        verbose_name="页脚导航",
     )
 
     panels = [
@@ -63,7 +66,7 @@ class NavigationSettings(BaseSiteSetting, ClusterableModel):
                 FieldPanel("brand_title_second_line"),
                 FieldPanel("brand_subtitle"),
             ],
-            heading="Header brand",
+            heading="页眉品牌区",
         ),
         FieldPanel("primary_navigation"),
         FieldPanel("footer_navigation"),

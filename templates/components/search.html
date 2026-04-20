@@ -44,8 +44,8 @@
             px-4 pt-3 pb-2 mr-3
             " 
             type="search"
-            aria-label="Search our website"
-            placeholder="Search our website"
+            aria-label="站内搜索"
+            placeholder="请输入关键词"
             name="query"
             {% if variant == "search-panel" %}
                 data-search-input
@@ -62,17 +62,20 @@
             {% endif %}
             px-5 
             py-3 
+            min-w-[88px]
+            shrink-0
             justify-center 
             items-center 
             text-sm 
             md:text-base 
             font-codepro 
             uppercase 
+            whitespace-nowrap
             inline-flex 
             rounded-[30px]
             "
         >
-            Search
+            搜索
         </button>
     </div>
 </form>

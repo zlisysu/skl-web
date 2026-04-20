@@ -4,7 +4,7 @@
 
 {% if paginator_page.paginator.num_pages > 1 %}
     <nav 
-        aria-label="Pagination results" 
+        aria-label="分页导航" 
         role="navigation" 
         class="flex flex-row justify-center items-center gap-2.5 pt-10">
             {% if paginator_page.has_previous %}
@@ -24,7 +24,7 @@
                     "
                     href="{% querystring_modify page=paginator_page.previous_page_number %}">
                     {% include "icons/arrow-right.html" with class="fill-current w-3 h-3 rotate-180" %}
-                    <span class="sr-only">Previous page</span>
+                    <span class="sr-only">上一页</span>
                 </a>
             {% endif %}
 
@@ -81,7 +81,7 @@
             {% for i in paginator_page.paginator.page_range %}
                 {% if paginator_page.number == i %}
                     
-                    <li aria-current="page" aria-label="Page {{ i }}">
+                    <li aria-current="page" aria-label="第 {{ i }} 页">
                         <span
                             class="
                             rounded-md
@@ -190,7 +190,7 @@
                 min-h-10
                 "
                 href="{% querystring_modify page=paginator_page.next_page_number %}">
-                <span class="sr-only">Next page</span>
+                <span class="sr-only">下一页</span>
                 {% include "icons/arrow-right.html" with class="fill-current w-3 h-3" %}
             </a>
 

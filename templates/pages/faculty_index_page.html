@@ -15,7 +15,7 @@
                 {% if faculty_groups %}
                     <div class="flex flex-wrap justify-center pt-7 gap-2.5">
                         <a href="{% pageurl page %}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_group %}bg-white text-mackerel-300 border-mackerel-300{% else %}bg-mackerel-300 text-white border-mackerel-300{% endif %}">
-                            All
+                            全部
                         </a>
                         {% for group in faculty_groups %}
                             <a href="{% pageurl page %}?group={{ group.slug }}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_group == group.slug %}bg-mackerel-300 text-white border-mackerel-300{% else %}bg-white text-mackerel-300 border-mackerel-300{% endif %}">
@@ -33,7 +33,7 @@
             <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">
-                        Faculty
+                        师资力量
                     </p>
                     <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">
                         栏目内容

@@ -33,7 +33,7 @@ class CaptionedImageBlock(blocks.StructBlock):
     image = ImageChooserBlock()
     image_alt_text = blocks.CharBlock(
         required=False,
-        help_text="If left blank, the image's global alt text will be used.",
+        help_text="留空时将使用图片全局 alt 文本。",
     )
     caption = blocks.CharBlock(required=False)
 
@@ -46,7 +46,7 @@ class InternalLinkBlock(blocks.StructBlock):
     page = blocks.PageChooserBlock()
     title = blocks.CharBlock(
         required=False,
-        help_text="Leave blank to use page's listing title.",
+        help_text="留空时使用页面的列表标题。",
     )
 
     class Meta:
@@ -79,7 +79,7 @@ class LinkStreamBlock(blocks.StreamBlock):
 
     class Meta:
         icon = "link"
-        label = "Link"
+        label = "链接"
         min_num = 1
         max_num = 1
 
@@ -101,7 +101,7 @@ class CardBlock(blocks.StructBlock):
     class Meta:
         icon = "form"
         template = "components/streamfield/blocks/card_block.html"
-        label = "Card"
+        label = "卡片"
         value_class = CardStructValue
 
 
@@ -109,21 +109,21 @@ class FeaturedArticleBlock(blocks.StructBlock):
     link = ArticlePageLinkBlock()
     image = ImageBlock(
         required=False,
-        help_text="Set to override the image of the chosen article page.",
+        help_text="用于覆盖所选文章默认展示图。",
     )
     description = blocks.TextBlock(
         max_length=255,
         required=False,
-        help_text="Choose to override a page's listing summary or introduction.",
+        help_text="用于覆盖页面默认的列表摘要或简介。",
     )
     cta_text = blocks.CharBlock(
         max_length=255,
         blank=False,
-        help_text="This is the cta link text. This will automatically redirect to the article page.",
+        help_text="按钮文字，点击后将跳转到对应文章页面。",
     )
     left_aligned = blocks.BooleanBlock(
         required=False,
-        help_text="If checked, the text will be left-aligned.",
+        help_text="勾选后文本左对齐。",
     )
 
     class Meta:
@@ -139,8 +139,8 @@ class BaseSectionBlock(blocks.StructBlock):
     )  # Should use H2s only
     sr_only_label = blocks.BooleanBlock(
         required=False,
-        label="Screen reader only label",
-        help_text="If checked, the heading will be hidden from view and avaliable to screen-readers only.",
+        label="仅屏幕阅读器显示",
+        help_text="勾选后标题仅对屏幕阅读器可见。",
     )
 
     class Meta:
@@ -173,7 +173,7 @@ class CTASectionBlock(blocks.StructBlock):
 
     class Meta:
         icon = "link"
-        label = "CTA"
+        label = "操作区"
         template = "components/streamfield/blocks/cta_block.html"
 
 
@@ -182,7 +182,7 @@ class BaseCardSectionBlock(BaseSectionBlock):
         CardBlock(),
         max_num=6,
         min_num=3,
-        label="Card",
+        label="卡片",
     )
     class Meta:
         abstract = True

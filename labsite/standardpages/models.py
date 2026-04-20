@@ -32,14 +32,14 @@ class StandardPage(BasePage):
         FieldPanel("body"),
         MultiFieldPanel(
             [
-                FieldPanel("featured_section_title", heading="Title"),
+                FieldPanel("featured_section_title", heading="标题"),
                 InlinePanel(
                     "page_related_pages",
-                    label="Pages",
+                    label="页面",
                     max_num=3,
                 ),
             ],
-            heading="Featured section",
+            heading="推荐内容",
         ),
     ]
 
@@ -94,7 +94,7 @@ class IndexPage(BasePage):
         FieldPanel("introduction"),
         InlinePanel(
             "page_related_pages",
-            label="Featured pages",
+            label="推荐页面",
             min_num=3,
             max_num=12,
         ),

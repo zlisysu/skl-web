@@ -27,7 +27,7 @@
                             <span class="header-brand-title">{{ nav_settings.brand_title_second_line }}</span>
                         {% endif %}
                     {% else %}
-                        <span class="header-brand-title">{{ current_site.site_name|default:"Site name" }}</span>
+                        <span class="header-brand-title">{{ current_site.site_name|default:"站点名称" }}</span>
                     {% endif %}
                 </span>
             </span>
@@ -43,16 +43,16 @@
                 data-mobile-menu-toggle
                 aria-haspopup="true" 
                 aria-expanded="false" 
-                aria-label="Open navigation menu"
+                aria-label="打开导航菜单"
             >
                 <span class="button-menu-toggle__line"></span>
                 <span class="button-menu-toggle__line"></span>
-                <span class="sr-only">Menu</span>
+                <span class="sr-only">菜单</span>
             </button>
         </div>
         
         
-        <nav aria-label="Primary" class="header-primary-nav" data-header-primary-nav>
+        <nav aria-label="主导航" class="header-primary-nav" data-header-primary-nav>
             <ul class="header-nav-list flex">
                 {% for link in settings.navigation.NavigationSettings.primary_navigation %}
                     {% if link.value.page %}
@@ -99,11 +99,11 @@
                         type="button"
                         aria-expanded="true" 
                         aria-controls="search-panel" 
-                        aria-label="Show search overlay" 
+                        aria-label="打开搜索面板" 
                         class=""
                         >
                         <span class="sr-only">
-                        Search 
+                        搜索 
                         </span>
                         {% include "icons/magnifying-glass.html" with class="fill-current w-5 h-5" %}
                     </button>
@@ -132,7 +132,7 @@
         " 
         data-mobile-menu-content
     >
-    <nav aria-label="Primary" class="py-32">
+    <nav aria-label="主导航" class="py-32">
         <ul class="flex flex-col pt-5">
             {% for link in settings.navigation.NavigationSettings.primary_navigation %}
                 <li class="

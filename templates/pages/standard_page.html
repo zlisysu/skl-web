@@ -39,7 +39,7 @@
                 {% if section_filters %}
                     <div class="flex flex-wrap justify-center pt-7 gap-2.5">
                         <a href="{% pageurl page %}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_section %}bg-white text-mackerel-300 border-mackerel-300{% else %}bg-mackerel-300 text-white border-mackerel-300{% endif %}">
-                            All
+                            全部
                         </a>
                         {% for section in section_filters %}
                             <a href="{% pageurl page %}?section={{ section.slug }}" class="py-2.5 px-5 text-sm uppercase font-codepro font-medium border-[1px] rounded-[85px] {% if matching_section == section.slug %}bg-mackerel-300 text-white border-mackerel-300{% else %}bg-white text-mackerel-300 border-mackerel-300{% endif %}">
@@ -61,7 +61,7 @@
                     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                         <div>
                             <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">
-                                Sections
+                                栏目
                             </p>
                             <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">
                                 栏目内容

@@ -30,10 +30,10 @@ class ArticlePage(BasePage):
         related_name="article_pages",
     )
     publication_date = models.DateTimeField(
+        "显示日期",
         null=True,
         blank=True,
-        help_text="Use this field to override the date that the "
-        "news item appears to have been published.",
+        help_text="用于覆盖新闻默认显示日期。",
     )
     introduction = models.TextField(blank=True)
     image = StreamField(
@@ -58,14 +58,14 @@ class ArticlePage(BasePage):
         FieldPanel("body"),
         MultiFieldPanel(
             [
-                FieldPanel("featured_section_title", heading="Title"),
+                FieldPanel("featured_section_title", heading="标题"),
                 InlinePanel(
                     "page_related_pages",
-                    label="Pages",
+                    label="页面",
                     max_num=3,
                 ),
             ],
-            heading="Featured section",
+            heading="推荐内容",
         ),
     ]
 
@@ -93,7 +93,7 @@ class NewsListingPage(BasePage):
         + [
             FieldPanel("introduction"),
             # FieldPanel("featured_card"),
-            HelpPanel("This page will automatically display child Article pages."),
+            HelpPanel("该页面会自动展示其下的新闻文章。"),
         ]
     )
 

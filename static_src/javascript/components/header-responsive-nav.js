@@ -88,7 +88,7 @@ class HeaderResponsiveNav {
         this.mobileMenuToggle?.classList.remove('mobile-menu-is-open');
         this.logo?.classList.remove('mobile-menu-is-open');
         this.mobileMenuToggle?.setAttribute('aria-expanded', 'false');
-        this.mobileMenuToggle?.setAttribute('aria-label', 'Open navigation menu');
+        this.mobileMenuToggle?.setAttribute('aria-label', '打开导航菜单');
         document.body.classList.remove('no-scroll');
         document.body.style.overflowY = 'visible';
 

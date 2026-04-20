@@ -29,7 +29,7 @@ class MobileMenu {
         this.node.classList.add('mobile-menu-is-open');
         this.headerLogo.classList.add('mobile-menu-is-open');
         this.node.setAttribute('aria-expanded', 'true');
-        this.node.setAttribute('aria-label', 'close navigation menu');
+        this.node.setAttribute('aria-label', '关闭导航菜单');
         this.body.classList.add('no-scroll');
 
         // Make sure that the page is not scrollable. Only the drawer.
@@ -50,7 +50,7 @@ class MobileMenu {
         this.node.classList.remove('mobile-menu-is-open');
         this.headerLogo.classList.remove('mobile-menu-is-open');
         this.node.setAttribute('aria-expanded', 'false');
-        this.node.setAttribute('aria-label', 'Open navigation menu');
+        this.node.setAttribute('aria-label', '打开导航菜单');
         this.body.classList.remove('no-scroll');
 
         // Set the page to be scrollable.
