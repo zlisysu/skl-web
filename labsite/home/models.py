@@ -26,6 +26,14 @@ class HomePage(BasePage):
         on_delete=models.SET_NULL,
         related_name="+",
     )
+    background_image = models.ForeignKey(
+        "images.CustomImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="首页首屏背景图，建议使用浅色或留白较多的横向图片。",
+    )
     hero_cta = StreamField(
         [("link", InternalLinkBlock())],
         blank=True,
@@ -40,6 +48,7 @@ class HomePage(BasePage):
     content_panels = BasePage.content_panels + [
         FieldPanel("introduction"),
         FieldPanel("hero_image"),
+        FieldPanel("background_image"),
         FieldPanel("hero_cta"),
         FieldPanel("body"),
         MultiFieldPanel(

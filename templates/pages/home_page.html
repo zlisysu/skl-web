@@ -2,122 +2,178 @@
 {% extends "base_page.html" %}
 {% load wagtailcore_tags wagtailimages_tags static %}
 
-{% block content %}
-    <div class="site-padding site-container">
-        <div class="home-hero relative pt-24 md:pt-28 tall:pt-40 pb-20 md:pb-28">
-            <div class="home-hero-grid">
-                <div class="relative max-w-[872px]">
-                    <p class="home-kicker">National Key Laboratory</p>
-                    <h1 class="relative z-10 font-serif4 [word-spacing:-6px] font-bold text-6xl md:text-8xl lg:text-10xl">
-                        {{ page.title }}
-                    </h1>
+{% block body_class %}home-page-body{% endblock %}
 
-                    {% if page.hero_image %}
-                        <div class="home-hero-image home-hero-image-has-media">
-                            {% image page.hero_image fill-900x900 class="w-full h-full object-cover" %}
+{% block content %}
+    {% if page.background_image %}
+        {% image page.background_image width-2200 as home_background %}
+    {% endif %}
+    {% if page.hero_image %}
+        {% image page.hero_image fill-960x960 as hero_visual %}
+    {% endif %}
+
+    <div class="home-shell" {% if home_background %}style="--home-bg-image: url('{{ home_background.url }}');"{% endif %}>
+        <section class="site-padding site-container home-hero-section">
+            <div class="home-hero">
+                <div class="home-hero-grid">
+                    <div class="home-hero-copy">
+                        <p class="home-kicker">National Key Laboratory</p>
+                        <h1 class="home-hero-title">{{ page.title }}</h1>
+
+                        <div class="home-hero-intro rich-text">
+                            {% if page.introduction %}
+                                <p>{{ page.introduction|linebreaksbr }}</p>
+                            {% else %}
+                                <p>全国重点实验室官方网站，集中展示实验室概况、党建工作、师资力量、新闻动态、学术科研与联系方式。</p>
+                            {% endif %}
                         </div>
-                    {% else %}
-                        <div class="home-hero-image"></div>
-                    {% endif %}
-                    <div class="relative z-10 max-w-[636px] pt-5 rich-text">
-                        {% if page.introduction %}
-                            {{ page.introduction|richtext }}
-                        {% else %}
-                            <p>立足国家医药健康重大战略需求，面向创新药物研发前沿，建设集科学研究、技术创新、人才培养与开放共享于一体的高水平药学研究平台。</p>
+
+                        {% if page.hero_cta %}
+                        <div class="home-hero-actions">
+                            {% if page.hero_cta %}
+                                {% include "components/button.html" with title=page.hero_cta.0.value.get_title url=page.hero_cta.0.value.get_url classes="home-hero-button" %}
+                            {% endif %}
+                        </div>
                         {% endif %}
                     </div>
-                    {% if page.hero_cta %}
-                        <div class="relative z-10 pt-10">
-                            {% include "components/button.html" with title=page.hero_cta.0.value.get_title url=page.hero_cta.0.value.get_url %}
+
+                    <div class="home-hero-visual-wrap">
+                        <div class="home-hero-orb"></div>
+                        <div class="home-hero-ring home-hero-ring-one"></div>
+                        <div class="home-hero-ring home-hero-ring-two"></div>
+                        {% if hero_visual %}
+                            <div class="home-hero-visual home-hero-visual-has-media">
+                                <img
+                                    src="{{ hero_visual.url }}"
+                                    alt="{{ page.hero_image.title }}"
+                                    width="{{ hero_visual.width }}"
+                                    height="{{ hero_visual.height }}"
+                                >
+                            </div>
+                        {% else %}
+                            <div class="home-hero-visual">
+                                <span class="home-hero-placeholder">LAB</span>
+                            </div>
+                        {% endif %}
+                        <div class="home-hero-note home-hero-note-top">
+                            <span class="home-hero-note-label">Focus</span>
+                            <strong>创新药物研发与开放共享</strong>
                         </div>
-                    {% endif %}
+                        <div class="home-hero-note home-hero-note-bottom">
+                            <span class="home-hero-note-label">Scope</span>
+                            <strong>概况、党建、人才、科研一体展示</strong>
+                        </div>
+                    </div>
                 </div>
 
             </div>
-        </div>
+        </section>
     </div>
 
-    {% include_block page.body %}
-
-    <section class="site-padding site-container home-module">
-        <div class="flex items-end justify-between gap-6">
-            <div>
-                <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">News</p>
-                <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">新闻动态</h2>
+    <div class="home-content">
+        {% if page.body %}
+            <div class="site-padding site-container home-body-stream">
+                {% include_block page.body %}
             </div>
-            <a class="font-codepro underline underline-offset-8" href="/news/">查看全部</a>
-        </div>
-        <div class="grid home-module-grid pt-10 md:grid-cols-2 xl:grid-cols-3">
-            {% for item in latest_news %}
-                <article class="home-news-card rounded-3xl border border-mackerel-200 p-7 bg-white/80">
-                    <p class="home-news-line">
-                        <span class="home-news-date">{{ item.publication_date|default:item.first_published_at|date:"Y-m-d" }}</span>
-                        <a href="{% pageurl item %}" class="home-news-title hover:text-mackerel-300">{{ item.title }}</a>
-                    </p>
-                    {% if item.introduction %}
-                        <p class="home-news-summary">{{ item.introduction }}</p>
-                    {% endif %}
-                </article>
-            {% empty %}
-                <p class="pt-8 opacity-70">后台添加新闻后，这里会自动显示最新内容。</p>
-            {% endfor %}
-        </div>
-    </section>
+        {% endif %}
 
-    <section class="site-padding site-container home-module">
-        <div class="flex items-end justify-between gap-6">
-            <div>
-                <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">Faculty</p>
-                <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">师资力量</h2>
+        <section id="home-news" class="site-padding site-container home-module">
+            <div class="home-module-shell">
+                <div class="home-module-head">
+                    <div>
+                        <p class="home-module-kicker">News Trends</p>
+                        <h2 class="home-module-title">新闻动态</h2>
+                    </div>
+                    <a class="home-module-link" href="/news/">查看全部</a>
+                </div>
+                <div class="grid home-module-grid lg:grid-cols-2">
+                    {% for item in latest_news %}
+                        <article class="home-news-card">
+                            <div class="home-news-meta">
+                                <span class="home-news-date">{{ item.publication_date|default:item.first_published_at|date:"Y-m-d" }}</span>
+                                <span class="home-card-arrow">&rarr;</span>
+                            </div>
+                            <h3 class="home-news-heading">
+                                <a href="{% pageurl item %}" class="home-news-title">{{ item.title }}</a>
+                            </h3>
+                            {% if item.introduction %}
+                                <p class="home-news-summary">{{ item.introduction }}</p>
+                            {% endif %}
+                        </article>
+                    {% empty %}
+                        <p class="pt-8 opacity-70">后台添加新闻后，这里会自动显示最新内容。</p>
+                    {% endfor %}
+                </div>
             </div>
-            <a class="font-codepro underline underline-offset-8" href="/faculty/">查看全部</a>
-        </div>
-        <div class="grid home-module-grid pt-10 md:grid-cols-2 xl:grid-cols-3">
-            {% for member in featured_faculty %}
-                <article class="min-h-44 rounded-3xl border border-mackerel-200 p-7 bg-white/80">
-                    {% if member.photo %}
-                        {% image member.photo fill-480x320 class="w-full h-56 object-cover rounded-2xl" %}
-                    {% endif %}
-                    <h3 class="text-2xl font-semibold pt-5">
-                        <a href="{% pageurl member %}" class="hover:text-mackerel-300">{{ member.title }}</a>
-                    </h3>
-                    {% if member.position or member.research_areas %}
-                        <p class="pt-3 opacity-80">{{ member.position }}{% if member.position and member.research_areas %} / {% endif %}{{ member.research_areas }}</p>
-                    {% endif %}
-                </article>
-            {% empty %}
-                <p class="pt-8 opacity-70">后台添加教师详情页后，这里会自动显示推荐师资。</p>
-            {% endfor %}
-        </div>
-    </section>
+        </section>
 
-    <section class="site-padding site-container home-module">
-        <div class="flex items-end justify-between gap-6">
-            <div>
-                <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">Research</p>
-                <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">学术科研</h2>
+        <section id="home-faculty" class="site-padding site-container home-module">
+            <div class="home-module-shell">
+                <div class="home-module-head">
+                    <div>
+                        <p class="home-module-kicker">Faculty</p>
+                        <h2 class="home-module-title">师资力量</h2>
+                    </div>
+                    <a class="home-module-link" href="/faculty/">查看全部</a>
+                </div>
+                <div class="grid home-module-grid md:grid-cols-2 xl:grid-cols-3">
+                    {% for member in featured_faculty %}
+                        <article class="home-person-card">
+                            {% if member.photo %}
+                                <div class="home-person-media">
+                                    {% image member.photo fill-560x420 class="home-person-image" %}
+                                </div>
+                            {% endif %}
+                            <div class="home-person-body">
+                                <p class="home-person-kicker">Faculty Profile</p>
+                                <h3 class="home-person-title">
+                                    <a href="{% pageurl member %}">{{ member.title }}</a>
+                                </h3>
+                                {% if member.position or member.research_areas %}
+                                    <p class="home-person-summary">{{ member.position }}{% if member.position and member.research_areas %} / {% endif %}{{ member.research_areas }}</p>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% empty %}
+                        <p class="pt-8 opacity-70">后台添加教师详情页后，这里会自动显示推荐师资。</p>
+                    {% endfor %}
+                </div>
             </div>
-            <a class="font-codepro underline underline-offset-8" href="/research/achievements/">查看成果</a>
-        </div>
-        <div class="grid home-module-grid pt-10 md:grid-cols-2">
-            {% for item in featured_achievements %}
-                <article class="home-news-card rounded-3xl border border-mackerel-200 p-7 bg-white/80">
-                    <p class="home-news-line">
-                        <span class="home-news-date">
-                            {% if item.achievement_date %}{{ item.achievement_date|date:"Y-m-d" }}{% else %}{{ item.get_achievement_type_display }}{% endif %}
-                        </span>
-                        <a href="{% pageurl item %}" class="home-news-title hover:text-mackerel-300">{{ item.title }}</a>
-                    </p>
-                    {% if item.summary %}
-                        <p class="home-news-summary">{{ item.summary }}</p>
-                    {% endif %}
-                </article>
-            {% empty %}
-                <p class="pt-8 opacity-70">后台添加科研成果后，这里会自动显示推荐内容。</p>
-            {% endfor %}
-        </div>
-    </section>
+        </section>
 
-    {% include "components/related-pages.html" %}
+        <section id="home-research" class="site-padding site-container home-module">
+            <div class="home-module-shell">
+                <div class="home-module-head">
+                    <div>
+                        <p class="home-module-kicker">Research</p>
+                        <h2 class="home-module-title">学术科研</h2>
+                    </div>
+                    <a class="home-module-link" href="/research/achievements/">查看成果</a>
+                </div>
+                <div class="grid home-module-grid md:grid-cols-2">
+                    {% for item in featured_achievements %}
+                        <article class="home-news-card home-research-card">
+                            <div class="home-news-meta">
+                                <span class="home-news-date">
+                                    {% if item.achievement_date %}{{ item.achievement_date|date:"Y-m-d" }}{% else %}{{ item.get_achievement_type_display }}{% endif %}
+                                </span>
+                                <span class="home-card-arrow">&rarr;</span>
+                            </div>
+                            <h3 class="home-news-heading">
+                                <a href="{% pageurl item %}" class="home-news-title">{{ item.title }}</a>
+                            </h3>
+                            {% if item.summary %}
+                                <p class="home-news-summary">{{ item.summary }}</p>
+                            {% endif %}
+                        </article>
+                    {% empty %}
+                        <p class="pt-8 opacity-70">后台添加科研成果后，这里会自动显示推荐内容。</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        {% include "components/related-pages.html" %}
+    </div>
 
 {% endblock %}
