@@ -1,6 +1,6 @@
 
 {% extends "base_page.html" %}
-{% load wagtailcore_tags wagtailimages_tags static %}
+{% load wagtailcore_tags wagtailimages_tags wagtailsettings_tags static %}
 
 {% block body_class %}home-page-body{% endblock %}
 
@@ -86,23 +86,79 @@
                     </div>
                     <a class="home-module-link" href="/news/">查看全部</a>
                 </div>
-                <div class="grid home-module-grid lg:grid-cols-2">
-                    {% for item in latest_news %}
-                        <article class="home-news-card">
-                            <div class="home-news-line">
-                                <span class="home-news-date">{{ item.publication_date|default:item.first_published_at|date:"Y-m-d" }}</span>
-                                <h3 class="home-news-heading">
-                                    <a href="{% pageurl item %}" class="home-news-title">{{ item.title }}</a>
-                                </h3>
+                {% if latest_news %}
+                    <div class="home-news-showcase" data-home-news-carousel>
+                        <div class="home-news-visual-stage">
+                            {% for item in latest_news %}
+                                {% if item.image %}
+                                    {% image item.image.0.value.image fill-1200x760 as news_visual %}
+                                {% elif item.listing_image %}
+                                    {% image item.listing_image fill-1200x760 as news_visual %}
+                                {% else %}
+                                    {% image settings.utils.SystemMessagesSettings.get_placeholder_image fill-1200x760 as news_visual %}
+                                {% endif %}
+                                <a
+                                    href="{% pageurl item %}"
+                                    class="home-news-visual-slide{% if forloop.first %} is-active{% endif %}"
+                                    data-home-news-slide
+                                    data-slide-index="{{ forloop.counter0 }}"
+                                    aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+                                >
+                                    <img
+                                        src="{{ news_visual.url }}"
+                                        width="{{ news_visual.width }}"
+                                        height="{{ news_visual.height }}"
+                                        alt="{% if item.image %}{% firstof item.image.0.value.image_alt_text news_visual.alt item.title %}{% else %}{% firstof news_visual.alt item.title %}{% endif %}"
+                                        class="home-news-visual-image"
+                                        {% if news_visual.focal_point %}
+                                        style="{{ news_visual.object_position_style }}"
+                                        {% endif %}
+                                    >
+                                    <span class="home-news-visual-overlay"></span>
+                                    <span class="home-news-visual-copy">
+                                        <span class="home-news-visual-date">{{ item.publication_date|default:item.first_published_at|date:"Y-m-d" }}</span>
+                                        <span class="home-news-visual-title">{{ item.title }}</span>
+                                    </span>
+                                </a>
+                            {% endfor %}
+                            <div class="home-news-dots" aria-label="新闻轮播切换">
+                                {% for item in latest_news %}
+                                    <button
+                                        type="button"
+                                        class="home-news-dot{% if forloop.first %} is-active{% endif %}"
+                                        data-home-news-dot
+                                        data-slide-index="{{ forloop.counter0 }}"
+                                        aria-label="切换到第 {{ forloop.counter }} 条新闻"
+                                        aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                                    ></button>
+                                {% endfor %}
                             </div>
-                            {% if item.introduction %}
-                                <p class="home-news-summary">{{ item.introduction }}</p>
-                            {% endif %}
-                        </article>
-                    {% empty %}
-                        <p class="pt-8 opacity-70">后台添加新闻后，这里会自动显示最新内容。</p>
-                    {% endfor %}
-                </div>
+                        </div>
+                        <div class="home-news-list" role="list">
+                            {% for item in latest_news %}
+                                <article
+                                    class="home-news-card home-news-card--list{% if forloop.first %} is-active{% endif %}"
+                                    data-home-news-item
+                                    data-slide-index="{{ forloop.counter0 }}"
+                                >
+                                    <a href="{% pageurl item %}" class="home-news-card-link">
+                                        <div class="home-news-line">
+                                            <span class="home-news-date">{{ item.publication_date|default:item.first_published_at|date:"Y-m-d" }}</span>
+                                            <h3 class="home-news-heading">
+                                                <span class="home-news-title">{{ item.title }}</span>
+                                            </h3>
+                                        </div>
+                                        {% if item.introduction %}
+                                            <p class="home-news-summary">{{ item.introduction }}</p>
+                                        {% endif %}
+                                    </a>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="pt-8 opacity-70">后台添加新闻后，这里会自动显示最新内容。</p>
+                {% endif %}
             </div>
         </section>
 
