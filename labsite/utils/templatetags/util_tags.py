@@ -6,6 +6,9 @@ from django.template.defaultfilters import slugify
 from django.db.models import Model
 from django.http.request import QueryDict
 
+from labsite.standardpages.models import FacultyPage
+from labsite.utils.models import ArticleTopic
+
 register = template.Library()
 
 MODE_ADD = "__add"
@@ -26,6 +29,71 @@ def format_heading_id(text, id) -> str:
     formatted_text = f"{slugify(text)}-{truncated_id}"
 
     return formatted_text
+
+
+@register.filter
+def menu_children(page):
+    if not page:
+        return []
+
+    page_type = page.specific_class.__name__ if getattr(page, "specific_class", None) else page.__class__.__name__
+
+    if page.slug == "home":
+        return []
+
+    if page_type == "FacultyIndexPage":
+        return [
+            {
+                "title": label,
+                "url": f"{page.url}?group={slug}",
+            }
+            for slug, label in FacultyPage.FACULTY_GROUP_CHOICES
+        ]
+
+    if page_type == "NewsListingPage":
+        topics = (
+            ArticleTopic.objects.filter(
+                article_pages__live=True,
+                article_pages__path__startswith=page.path,
+            )
+            .values("title", "slug")
+            .distinct()
+            .order_by("title")
+        )
+        return [
+            {
+                "title": topic["title"],
+                "url": f"{page.url}?topic={topic['slug']}",
+            }
+            for topic in topics
+        ]
+
+    return list(page.get_children().live().public().in_menu().specific())
+
+
+@register.filter
+def listing_label(page):
+    if not page:
+        return ""
+
+    if isinstance(page, dict):
+        return page.get("title", "")
+
+    return page.listing_title or page.title
+
+
+@register.filter
+def menu_item_url(item):
+    if not item:
+        return ""
+
+    if isinstance(item, dict):
+        return item.get("url", "")
+
+    if hasattr(item, "url"):
+        return item.url
+
+    return ""
 
 
 # Table of contents

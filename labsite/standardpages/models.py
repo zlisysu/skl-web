@@ -108,11 +108,20 @@ class FacultyIndexPage(BasePage):
     subpage_types = ["standardpages.FacultyPage"]
 
     introduction = RichTextField(blank=True)
+    default_photo = models.ForeignKey(
+        "images.CustomImage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="成员未上传头像时使用的默认占位图。",
+    )
 
     search_fields = BasePage.search_fields + [index.SearchField("introduction")]
 
     content_panels = BasePage.content_panels + [
         FieldPanel("introduction"),
+        FieldPanel("default_photo"),
     ]
 
     def get_context(self, request, *args, **kwargs):

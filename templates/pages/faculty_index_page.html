@@ -42,12 +42,14 @@
             </div>
         </div>
 
-        <div class="grid listing-grid pt-10 md:grid-cols-2 xl:grid-cols-3">
+        <div class="grid listing-grid pt-10 md:grid-cols-2">
             {% for member in faculty_members %}
                 <article class="faculty-card">
                     <div class="faculty-card-media">
                         {% if member.photo %}
                             {% image member.photo fill-520x520 class="faculty-card-image" %}
+                        {% elif page.default_photo %}
+                            {% image page.default_photo fill-520x520 class="faculty-card-image" %}
                         {% endif %}
                     </div>
                     <div class="faculty-card-body">

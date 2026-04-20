@@ -8,6 +8,8 @@
             <div>
                 {% if page.photo %}
                     {% image page.photo fill-720x900 class="w-full rounded-3xl object-cover" %}
+                {% elif page.get_parent.specific.default_photo %}
+                    {% image page.get_parent.specific.default_photo fill-720x900 class="w-full rounded-3xl object-cover" %}
                 {% endif %}
             </div>
             <div>

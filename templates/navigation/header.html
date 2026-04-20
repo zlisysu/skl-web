@@ -1,5 +1,5 @@
 
-{% load wagtailcore_tags wagtailsettings_tags wagtailimages_tags static %}
+{% load wagtailcore_tags wagtailsettings_tags wagtailimages_tags static util_tags %}
 {% wagtail_site as current_site %}
 {% with nav_settings=settings.navigation.NavigationSettings %}
 
@@ -55,28 +55,43 @@
         <nav aria-label="Primary" class="header-primary-nav" data-header-primary-nav>
             <ul class="header-nav-list flex">
                 {% for link in settings.navigation.NavigationSettings.primary_navigation %}
-                    <li>
-                        {% if link.value.page %}
-                            <a 
-                                class="
-                                header-nav-link
-                                flex
-                                items-center 
-                                font-semibold 
-                                font-codepro
-                                whitespace-nowrap
-                                underline
-                                underline-offset-8
-                                decoration-[1.5px]
-                                decoration-mackerel-200
-                                hover:decoration-mackerel-300
-                                " 
-                                href="{{ link.value.get_url }}" 
-                            >
-                                {{ link.value.get_title }}
-                            </a>
-                        {% endif %}
-                    </li>
+                    {% if link.value.page %}
+                        {% with page=link.value.page.specific children=link.value.page.specific|menu_children %}
+                            <li class="header-nav-item{% if children %} header-nav-item--has-children{% endif %}" data-desktop-nav-item>
+                                <a
+                                    class="
+                                    header-nav-link
+                                    flex
+                                    items-center
+                                    font-semibold
+                                    font-codepro
+                                    whitespace-nowrap
+                                    underline
+                                    underline-offset-8
+                                    decoration-[1.5px]
+                                    decoration-mackerel-200
+                                    hover:decoration-mackerel-300
+                                    "
+                                    href="{{ link.value.get_url }}"
+                                >
+                                    {{ link.value.get_title }}
+                                </a>
+                                {% if children %}
+                                    <div class="header-subnav" aria-label="{{ link.value.get_title }} 子栏目">
+                                        <ul class="header-subnav-list">
+                                            {% for child in children %}
+                                                <li>
+                                                    <a class="header-subnav-link" href="{{ child|menu_item_url }}">
+                                                        {{ child|listing_label }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% endwith %}
+                    {% endif %}
                 {% endfor %}
                 <li class="flex items-center">
                     <button 

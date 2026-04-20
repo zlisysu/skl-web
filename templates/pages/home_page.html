@@ -89,13 +89,12 @@
                 <div class="grid home-module-grid lg:grid-cols-2">
                     {% for item in latest_news %}
                         <article class="home-news-card">
-                            <div class="home-news-meta">
+                            <div class="home-news-line">
                                 <span class="home-news-date">{{ item.publication_date|default:item.first_published_at|date:"Y-m-d" }}</span>
-                                <span class="home-card-arrow">&rarr;</span>
+                                <h3 class="home-news-heading">
+                                    <a href="{% pageurl item %}" class="home-news-title">{{ item.title }}</a>
+                                </h3>
                             </div>
-                            <h3 class="home-news-heading">
-                                <a href="{% pageurl item %}" class="home-news-title">{{ item.title }}</a>
-                            </h3>
                             {% if item.introduction %}
                                 <p class="home-news-summary">{{ item.introduction }}</p>
                             {% endif %}
@@ -153,15 +152,14 @@
                 <div class="grid home-module-grid md:grid-cols-2">
                     {% for item in featured_achievements %}
                         <article class="home-news-card home-research-card">
-                            <div class="home-news-meta">
+                            <div class="home-news-line">
                                 <span class="home-news-date">
                                     {% if item.achievement_date %}{{ item.achievement_date|date:"Y-m-d" }}{% else %}{{ item.get_achievement_type_display }}{% endif %}
                                 </span>
-                                <span class="home-card-arrow">&rarr;</span>
+                                <h3 class="home-news-heading">
+                                    <a href="{% pageurl item %}" class="home-news-title">{{ item.title }}</a>
+                                </h3>
                             </div>
-                            <h3 class="home-news-heading">
-                                <a href="{% pageurl item %}" class="home-news-title">{{ item.title }}</a>
-                            </h3>
                             {% if item.summary %}
                                 <p class="home-news-summary">{{ item.summary }}</p>
                             {% endif %}
