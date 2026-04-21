@@ -3,7 +3,7 @@ from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.search import index
 
 from wagtail.fields import StreamField
-from labsite.utils.blocks import StoryBlock, InternalLinkBlock
+from labsite.utils.blocks import HomeQuickLinkBlock, StoryBlock, InternalLinkBlock
 from labsite.utils.models import BasePage
 
 
@@ -40,6 +40,14 @@ class HomePage(BasePage):
         min_num=0,
         max_num=1,
     )
+    hero_quick_links = StreamField(
+        [("link", HomeQuickLinkBlock())],
+        blank=True,
+        min_num=0,
+        max_num=4,
+        verbose_name="首屏快捷入口",
+        help_text="显示在首页首屏标题下方，建议添加 2 到 4 个外部链接，并为每个入口上传一张图片。",
+    )
     body = StreamField(StoryBlock(), blank=True)
     featured_section_title = models.TextField(blank=True)
 
@@ -50,6 +58,7 @@ class HomePage(BasePage):
         FieldPanel("hero_image"),
         FieldPanel("background_image"),
         FieldPanel("hero_cta"),
+        FieldPanel("hero_quick_links"),
         FieldPanel("body"),
         MultiFieldPanel(
             [

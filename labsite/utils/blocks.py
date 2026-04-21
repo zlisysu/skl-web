@@ -69,6 +69,19 @@ class ExternalLinkBlock(blocks.StructBlock):
         value_class = LinkStructValue
 
 
+class HomeQuickLinkBlock(blocks.StructBlock):
+    link = blocks.URLBlock()
+    title = blocks.CharBlock()
+    image = ImageChooserBlock(
+        required=False,
+        help_text="首屏快捷入口展示图，前台将按固定尺寸居中裁剪。",
+    )
+
+    class Meta:
+        icon = "image"
+        value_class = LinkStructValue
+
+
 class LinkStreamBlock(blocks.StreamBlock):
     """
     StreamBlock that allows editors to add a single link of type internal or external.

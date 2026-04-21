@@ -35,6 +35,37 @@
                             {% endif %}
                         </div>
                         {% endif %}
+
+                        {% if page.hero_quick_links %}
+                        <div class="home-hero-shortcuts" role="list" aria-label="首屏快捷入口">
+                            {% for shortcut in page.hero_quick_links %}
+                                <a
+                                    href="{{ shortcut.value.get_url }}"
+                                    class="home-hero-shortcut"
+                                    role="listitem"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    {% if shortcut.value.image %}
+                                        {% image shortcut.value.image max-420x220 as shortcut_image %}
+                                        <img
+                                            src="{{ shortcut_image.url }}"
+                                            width="{{ shortcut_image.width }}"
+                                            height="{{ shortcut_image.height }}"
+                                            alt="{% firstof shortcut_image.alt shortcut.value.get_title %}"
+                                            class="home-hero-shortcut-image"
+                                            {% if shortcut_image.focal_point %}
+                                            style="{{ shortcut_image.object_position_style }}"
+                                            {% endif %}
+                                        >
+                                    {% else %}
+                                        <span class="home-hero-shortcut-label">Quick Link</span>
+                                        <span class="home-hero-shortcut-title">{{ shortcut.value.get_title }}</span>
+                                    {% endif %}
+                                </a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                     </div>
 
                     <div class="home-hero-visual-wrap">
