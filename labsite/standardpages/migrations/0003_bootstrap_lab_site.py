@@ -1,55 +1,83 @@
 from django.db import migrations
 
 
-def _get_or_create_child(parent, model, title, slug, **extra_fields):
-    from wagtail.actions.publish_page_revision import PublishPageRevisionAction
+def _get_content_type(content_type_model, model_class, db_alias):
+    content_type, _created = content_type_model.objects.using(db_alias).get_or_create(
+        app_label=model_class._meta.app_label,
+        model=model_class._meta.model_name,
+    )
+    return content_type
 
-    existing = model.objects.filter(
+
+def _next_child_path(parent):
+    return f"{parent.path}{parent.numchild + 1:04d}"
+
+
+def _get_or_create_child(
+    parent,
+    model,
+    title,
+    slug,
+    db_alias,
+    content_type_model,
+    locale,
+    **extra_fields,
+):
+    existing = model.objects.using(db_alias).filter(
         path__startswith=parent.path,
         depth=parent.depth + 1,
         slug=slug,
     ).first()
     if existing:
-        if existing.live and existing.live_revision_id is None:
-            revision = existing.latest_revision or existing.save_revision(log_action=False)
-            PublishPageRevisionAction(
-                revision, changed=False, log_action=False
-            ).execute(skip_permission_checks=True)
+        existing.title = title
+        existing.draft_title = title
+        existing.live = True
+        existing.has_unpublished_changes = False
+        for field_name, value in extra_fields.items():
+            setattr(existing, field_name, value)
+        existing.save(using=db_alias)
         return existing
 
     page = model(
         title=title,
         draft_title=title,
         slug=slug,
-        live=False,
-        has_unpublished_changes=True,
+        live=True,
+        has_unpublished_changes=False,
+        path=_next_child_path(parent),
+        depth=parent.depth + 1,
+        numchild=0,
+        url_path=f"{parent.url_path}{slug}/",
+        content_type=_get_content_type(content_type_model, model, db_alias),
+        locale=locale,
         **extra_fields,
     )
-    parent.add_child(instance=page)
-    revision = page.save_revision(log_action=False)
-    PublishPageRevisionAction(revision, changed=False, log_action=False).execute(
-        skip_permission_checks=True
-    )
+    page.save(using=db_alias)
+    parent.numchild += 1
+    parent.save(using=db_alias, update_fields=["numchild"])
     return page
 
 
 def bootstrap_lab_site(apps, schema_editor):
-    from wagtail.actions.publish_page_revision import PublishPageRevisionAction
-    from wagtail.models import Page, Site
+    db_alias = schema_editor.connection.alias
 
-    from labsite.home.models import HomePage
-    from labsite.navigation.models import NavigationSettings
-    from labsite.news.models import NewsListingPage
-    from labsite.standardpages.models import (
-        AchievementIndexPage,
-        ContactPage,
-        FacultyIndexPage,
-        StandardPage,
-    )
-    from labsite.utils.models import ArticleTopic, AuthorSnippet
+    ContentType = apps.get_model("contenttypes", "ContentType")
+    Locale = apps.get_model("wagtailcore", "Locale")
+    Page = apps.get_model("wagtailcore", "Page")
+    Site = apps.get_model("wagtailcore", "Site")
+    HomePage = apps.get_model("home", "HomePage")
+    NavigationSettings = apps.get_model("navigation", "NavigationSettings")
+    NewsListingPage = apps.get_model("news", "NewsListingPage")
+    AchievementIndexPage = apps.get_model("standardpages", "AchievementIndexPage")
+    ContactPage = apps.get_model("standardpages", "ContactPage")
+    FacultyIndexPage = apps.get_model("standardpages", "FacultyIndexPage")
+    StandardPage = apps.get_model("standardpages", "StandardPage")
+    ArticleTopic = apps.get_model("utils", "ArticleTopic")
+    AuthorSnippet = apps.get_model("utils", "AuthorSnippet")
 
-    root = Page.objects.get(depth=1)
-    homepage = HomePage.objects.filter(depth=2).first()
+    root = Page.objects.using(db_alias).get(depth=1)
+    default_locale = Locale.objects.using(db_alias).order_by("id").first()
+    homepage = HomePage.objects.using(db_alias).filter(depth=2).first()
     if homepage is None:
         homepage = HomePage(
             title="首页",
@@ -57,10 +85,18 @@ def bootstrap_lab_site(apps, schema_editor):
             slug="home",
             introduction="全国重点实验室官方网站，集中展示实验室概况、党建工作、师资力量、新闻动态、学术科研与联系方式。",
             featured_section_title="重点栏目",
-            live=False,
-            has_unpublished_changes=True,
+            live=True,
+            has_unpublished_changes=False,
+            path=_next_child_path(root),
+            depth=root.depth + 1,
+            numchild=0,
+            url_path="/home/",
+            content_type=_get_content_type(ContentType, HomePage, db_alias),
+            locale=default_locale,
         )
-        root.add_child(instance=homepage)
+        homepage.save(using=db_alias)
+        root.numchild += 1
+        root.save(using=db_alias, update_fields=["numchild"])
     else:
         homepage.title = "首页"
         homepage.draft_title = "首页"
@@ -68,24 +104,19 @@ def bootstrap_lab_site(apps, schema_editor):
             "全国重点实验室官方网站，集中展示实验室概况、党建工作、师资力量、新闻动态、学术科研与联系方式。"
         )
         homepage.featured_section_title = "重点栏目"
-        homepage.live = homepage.live
-        homepage.save()
+        homepage.live = True
+        homepage.has_unpublished_changes = False
+        homepage.save(using=db_alias)
 
-    if homepage.live_revision_id is None:
-        revision = homepage.latest_revision or homepage.save_revision(log_action=False)
-        PublishPageRevisionAction(revision, changed=False, log_action=False).execute(
-            skip_permission_checks=True
-        )
-
-    site = Site.objects.order_by("id").first()
+    site = Site.objects.using(db_alias).order_by("id").first()
     if site:
         site.root_page = homepage
         site.site_name = "全国重点实验室"
         site.hostname = site.hostname or "localhost"
         site.is_default_site = True
-        site.save()
+        site.save(using=db_alias)
     else:
-        site = Site.objects.create(
+        site = Site.objects.using(db_alias).create(
             hostname="localhost",
             site_name="全国重点实验室",
             root_page=homepage,
@@ -97,6 +128,9 @@ def bootstrap_lab_site(apps, schema_editor):
         StandardPage,
         "实验室概况",
         "about",
+        db_alias,
+        ContentType,
+        default_locale,
         introduction="介绍实验室定位、建设目标、发展历程与组织架构。",
     )
     party = _get_or_create_child(
@@ -104,6 +138,9 @@ def bootstrap_lab_site(apps, schema_editor):
         StandardPage,
         "党建工作",
         "party-building",
+        db_alias,
+        ContentType,
+        default_locale,
         introduction="展示党建工作动态、理论学习和组织建设情况。",
     )
     faculty = _get_or_create_child(
@@ -111,6 +148,9 @@ def bootstrap_lab_site(apps, schema_editor):
         FacultyIndexPage,
         "师资力量",
         "faculty",
+        db_alias,
+        ContentType,
+        default_locale,
         introduction="<p>展示实验室主要师资、研究人员与人才队伍建设情况。</p>",
     )
     news = _get_or_create_child(
@@ -118,6 +158,9 @@ def bootstrap_lab_site(apps, schema_editor):
         NewsListingPage,
         "新闻",
         "news",
+        db_alias,
+        ContentType,
+        default_locale,
         introduction="<p>发布实验室新闻动态、通知公告、学术报告和媒体报道。</p>",
     )
     research = _get_or_create_child(
@@ -125,6 +168,9 @@ def bootstrap_lab_site(apps, schema_editor):
         StandardPage,
         "学术科研",
         "research",
+        db_alias,
+        ContentType,
+        default_locale,
         introduction="展示研究方向、科研成果、平台建设与项目进展。",
     )
     contact = _get_or_create_child(
@@ -132,6 +178,9 @@ def bootstrap_lab_site(apps, schema_editor):
         ContactPage,
         "联系我们",
         "contact",
+        db_alias,
+        ContentType,
+        default_locale,
         introduction="<p>欢迎通过电话、邮箱或来访方式与实验室联系。</p>",
         lab_name="全国重点实验室",
         address="请在后台补充实验室地址",
@@ -140,37 +189,40 @@ def bootstrap_lab_site(apps, schema_editor):
         contact_person="实验室办公室",
     )
 
-    _get_or_create_child(about, StandardPage, "实验室简介", "intro", introduction="实验室总体介绍。")
-    _get_or_create_child(about, StandardPage, "建设目标", "mission", introduction="实验室建设目标与总体定位。")
-    _get_or_create_child(about, StandardPage, "发展历程", "history", introduction="实验室发展历程与重要节点。")
-    _get_or_create_child(about, StandardPage, "组织架构", "organization", introduction="实验室组织架构与管理体系。")
-    _get_or_create_child(about, StandardPage, "管理制度", "policy", introduction="实验室管理制度与运行机制。")
+    _get_or_create_child(about, StandardPage, "实验室简介", "intro", db_alias, ContentType, default_locale, introduction="实验室总体介绍。")
+    _get_or_create_child(about, StandardPage, "建设目标", "mission", db_alias, ContentType, default_locale, introduction="实验室建设目标与总体定位。")
+    _get_or_create_child(about, StandardPage, "发展历程", "history", db_alias, ContentType, default_locale, introduction="实验室发展历程与重要节点。")
+    _get_or_create_child(about, StandardPage, "组织架构", "organization", db_alias, ContentType, default_locale, introduction="实验室组织架构与管理体系。")
+    _get_or_create_child(about, StandardPage, "管理制度", "policy", db_alias, ContentType, default_locale, introduction="实验室管理制度与运行机制。")
 
-    _get_or_create_child(party, StandardPage, "工作动态", "updates", introduction="党建工作动态。")
-    _get_or_create_child(party, StandardPage, "理论学习", "study", introduction="理论学习与主题教育。")
-    _get_or_create_child(party, StandardPage, "组织生活", "life", introduction="组织生活与支部活动。")
-    _get_or_create_child(party, StandardPage, "规章制度", "rules", introduction="党建工作制度文件。")
+    _get_or_create_child(party, StandardPage, "工作动态", "updates", db_alias, ContentType, default_locale, introduction="党建工作动态。")
+    _get_or_create_child(party, StandardPage, "理论学习", "study", db_alias, ContentType, default_locale, introduction="理论学习与主题教育。")
+    _get_or_create_child(party, StandardPage, "组织生活", "life", db_alias, ContentType, default_locale, introduction="组织生活与支部活动。")
+    _get_or_create_child(party, StandardPage, "规章制度", "rules", db_alias, ContentType, default_locale, introduction="党建工作制度文件。")
 
-    _get_or_create_child(research, StandardPage, "研究方向", "directions", introduction="实验室主要研究方向介绍。")
+    _get_or_create_child(research, StandardPage, "研究方向", "directions", db_alias, ContentType, default_locale, introduction="实验室主要研究方向介绍。")
     achievements = _get_or_create_child(
         research,
         AchievementIndexPage,
         "科研成果",
         "achievements",
+        db_alias,
+        ContentType,
+        default_locale,
         introduction="<p>汇总实验室代表性论文、项目、奖励与平台建设成果。</p>",
     )
-    _get_or_create_child(research, StandardPage, "平台建设", "platform", introduction="实验平台与公共支撑条件。")
+    _get_or_create_child(research, StandardPage, "平台建设", "platform", db_alias, ContentType, default_locale, introduction="实验平台与公共支撑条件。")
 
-    AuthorSnippet.objects.get_or_create(title="实验室办公室")
+    AuthorSnippet.objects.using(db_alias).get_or_create(title="实验室办公室")
     for title, slug in [
         ("实验室新闻", "lab-news"),
         ("通知公告", "notice"),
         ("学术报告", "seminar"),
         ("媒体报道", "media"),
     ]:
-        ArticleTopic.objects.get_or_create(title=title, slug=slug)
+        ArticleTopic.objects.using(db_alias).get_or_create(title=title, slug=slug)
 
-    NavigationSettings.objects.update_or_create(
+    NavigationSettings.objects.using(db_alias).update_or_create(
         site_id=site.id,
         defaults={
             "primary_navigation": [
@@ -211,6 +263,8 @@ def bootstrap_lab_site(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
+    atomic = False
+
     dependencies = [
         ("home", "0002_create_homepage"),
         ("navigation", "0001_initial"),

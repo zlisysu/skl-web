@@ -1,11 +1,18 @@
-from django.conf import settings
 from django.test import override_settings
-from wagtail.models import Site
 from django.test import TestCase
+from django.urls import reverse
+from wagtail.models import Site
 
 from labsite.home.models import HomePage
 
 
+TEST_STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+}
+
+
+@override_settings(STORAGES=TEST_STORAGES)
 class SearchViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -62,4 +69,13 @@ class SearchViewTests(TestCase):
             format="json",
         )
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, "There are no matching results.")
+        self.assertContains(resp, "没有找到匹配结果。")
+
+    def test_search_view_fallback_supports_chinese_queries(self):
+        resp = self.client.get(
+            self.search_url,
+            {"query": "实验室"},
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, self.home.title)
