@@ -179,6 +179,11 @@
         height: auto;
     }
 
+    .header-brand-image--fallback {
+        width: clamp(12rem, 22vw, 21rem);
+        max-width: 100%;
+    }
+
     .header-brand-copy {
         display: flex;
         min-width: 0;
