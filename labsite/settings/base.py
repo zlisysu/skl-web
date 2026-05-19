@@ -168,10 +168,18 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-STATIC_URL = "/static/"
 
 MEDIA_ROOT = os.environ.get("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
-MEDIA_URL = "/media/"
+
+FORCE_SCRIPT_NAME = os.environ.get("FORCE_SCRIPT_NAME") or None
+
+if FORCE_SCRIPT_NAME:
+    url_prefix = FORCE_SCRIPT_NAME.rstrip("/")
+    STATIC_URL = url_prefix + "/static/"
+    MEDIA_URL = url_prefix + "/media/"
+else:
+    STATIC_URL = "/static/"
+    MEDIA_URL = "/media/"
 
 # Default storage settings, with the staticfiles storage updated.
 # See https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-STORAGES
