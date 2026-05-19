@@ -4,6 +4,7 @@ __pycache__
 *.swp
 .env
 *.sqlite3
+/.playwright-mcp/
 /venv/
 /.venv/
 /tmp/
