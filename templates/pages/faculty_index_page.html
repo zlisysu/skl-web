@@ -53,12 +53,17 @@
                         {% endif %}
                     </div>
                     <div class="faculty-card-body">
-                        <p class="faculty-card-meta">{{ member.get_faculty_group_display }}</p>
+                        {% if member.faculty_group %}
+                            <p class="faculty-card-meta">{{ member.get_faculty_group_display }}</p>
+                        {% endif %}
                         <h2 class="faculty-card-title">
                             <a href="{% pageurl member %}" class="faculty-card-link">{{ member.title }}</a>
                         </h2>
                         {% if member.position or member.academic_title %}
                             <p class="faculty-card-summary">{{ member.position }}{% if member.position and member.academic_title %} / {% endif %}{{ member.academic_title }}</p>
+                        {% endif %}
+                        {% if member.affiliation %}
+                            <p class="faculty-card-summary">{{ member.affiliation }}</p>
                         {% endif %}
                         {% if member.research_areas %}
                             <p class="faculty-card-summary">{{ member.research_areas }}</p>

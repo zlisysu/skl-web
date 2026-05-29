@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.functions import Coalesce
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.search import index
 
@@ -82,9 +83,10 @@ class HomePage(BasePage):
         context["latest_news"] = (
             ArticlePage.objects.live()
             .public()
+            .annotate(display_order_date=Coalesce("publication_date", "first_published_at"))
             .specific()
             .select_related("listing_image", "author", "topic")
-            .order_by("-first_published_at")[:5]
+            .order_by("-display_order_date", "title")[:5]
         )
         context["featured_faculty"] = (
             FacultyPage.objects.live()

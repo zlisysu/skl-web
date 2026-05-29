@@ -6,7 +6,7 @@ from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.fields import StreamField
 from wagtail.snippets.blocks import SnippetChooserBlock
 
-from labsite.utils.blocks import LinkStreamBlock, InternalLinkBlock
+from labsite.utils.blocks import LinkStreamBlock, InternalLinkBlock, PartnerLinkBlock
 
 
 @register_setting(icon="list-ul")
@@ -57,6 +57,12 @@ class NavigationSettings(BaseSiteSetting, ClusterableModel):
         blank=True,
         verbose_name="页脚导航",
     )
+    partner_links = StreamField(
+        [("partner", PartnerLinkBlock())],
+        blank=True,
+        verbose_name="合作单位",
+        help_text="显示在网站底部，可添加合作单位图标和外部链接。",
+    )
 
     panels = [
         MultiFieldPanel(
@@ -69,5 +75,5 @@ class NavigationSettings(BaseSiteSetting, ClusterableModel):
             heading="页眉品牌区",
         ),
         FieldPanel("primary_navigation"),
-        FieldPanel("footer_navigation"),
+        FieldPanel("partner_links"),
     ]

@@ -36,6 +36,16 @@ class ArticlePage(BasePage):
         help_text="用于覆盖新闻默认显示日期。",
     )
     introduction = models.TextField(blank=True)
+    source_url = models.URLField(
+        "原文链接",
+        blank=True,
+        help_text="外部来源地址，例如中山大学药学院官网或微信公众号原文。",
+    )
+    open_source_directly = models.BooleanField(
+        "列表中直接跳转原文",
+        default=False,
+        help_text="勾选后，新闻列表和首页新闻入口点击标题时直接打开原文链接。",
+    )
     image = StreamField(
         [("image", CaptionedImageBlock())],
         blank=True,
@@ -54,6 +64,13 @@ class ArticlePage(BasePage):
         FieldPanel("publication_date"),
         FieldPanel("topic"),
         FieldPanel("introduction"),
+        MultiFieldPanel(
+            [
+                FieldPanel("source_url"),
+                FieldPanel("open_source_directly"),
+            ],
+            heading="原文链接",
+        ),
         FieldPanel("image"),
         FieldPanel("body"),
         MultiFieldPanel(

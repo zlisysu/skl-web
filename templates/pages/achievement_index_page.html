@@ -33,7 +33,11 @@
                         <div>
                             <p class="font-codepro text-sm uppercase tracking-[0.15em] opacity-60">{{ item.get_achievement_type_display }}</p>
                             <h2 class="text-3xl font-semibold pt-3">
-                                <a href="{% pageurl item %}" class="hover:text-mackerel-300">{{ item.title }}</a>
+                                {% if item.open_source_directly and item.source_url %}
+                                    <a href="{{ item.source_url }}" target="_blank" rel="noopener noreferrer" class="hover:text-mackerel-300">{{ item.title }}</a>
+                                {% else %}
+                                    <a href="{% pageurl item %}" class="hover:text-mackerel-300">{{ item.title }}</a>
+                                {% endif %}
                             </h2>
                         </div>
                         {% if item.achievement_date %}

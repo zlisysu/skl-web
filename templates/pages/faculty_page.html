@@ -13,7 +13,9 @@
                 {% endif %}
             </div>
             <div>
-                <p class="font-codepro text-sm uppercase tracking-[0.2em] opacity-60">{{ page.get_faculty_group_display }}</p>
+                {% if page.faculty_group %}
+                    <p class="font-codepro text-sm uppercase tracking-[0.2em] opacity-60">{{ page.get_faculty_group_display }}</p>
+                {% endif %}
                 <h1 class="font-serif4 text-5xl md:text-7xl font-bold pt-4">{{ page.title }}</h1>
                 {% if page.name_en %}
                     <p class="pt-3 text-xl opacity-70">{{ page.name_en }}</p>
@@ -21,6 +23,7 @@
                 <div class="pt-8 space-y-3 text-lg">
                     {% if page.position %}<p><strong>职务：</strong>{{ page.position }}</p>{% endif %}
                     {% if page.academic_title %}<p><strong>职称：</strong>{{ page.academic_title }}</p>{% endif %}
+                    {% if page.affiliation %}<p><strong>单位：</strong>{{ page.affiliation }}</p>{% endif %}
                     {% if page.research_areas %}<p><strong>研究方向：</strong>{{ page.research_areas }}</p>{% endif %}
                     {% if page.email %}<p><strong>邮箱：</strong>{{ page.email }}</p>{% endif %}
                     {% if page.phone %}<p><strong>电话：</strong>{{ page.phone }}</p>{% endif %}

@@ -1,6 +1,13 @@
 
 {% load wagtailcore_tags wagtailsettings_tags wagtailimages_tags %}
 
+{% if page.open_source_directly and page.source_url %}
+    {% firstof page.source_url as article_href %}
+    {% firstof "_blank" as article_target %}
+{% else %}
+    {% pageurl page as article_href %}
+{% endif %}
+
 <div class="flex flex-col 
     md:flex-row
     md:gap-10
@@ -68,7 +75,8 @@ w-full h-full group
             </p>
         {% endif %}
         <a
-            href="{% pageurl page %}"
+            href="{{ article_href }}"
+            {% if article_target %}target="{{ article_target }}" rel="noopener noreferrer"{% endif %}
             class="
             text-xl md:text-2xl font-bold leading-8 md:leading-10
             underline

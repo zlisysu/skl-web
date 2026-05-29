@@ -1,5 +1,5 @@
 
-{% load wagtailcore_tags wagtailsettings_tags static %}
+{% load wagtailcore_tags wagtailimages_tags wagtailsettings_tags static %}
 {% wagtail_site as current_site %}
 
 
@@ -8,36 +8,45 @@
 </div>
 
 <footer class="site-padding site-container w-full py-20">
-    <div class="flex flex-col lg:flex-row gap-20 justify-between">
-        {% if settings.navigation.NavigationSettings.footer_navigation %}
-        <div class="grid grid-cols-2 gap-20 justify-between">
-            {% for link_section in settings.navigation.NavigationSettings.footer_navigation %}
-                <div class="mb-10 lg:mb-0 lg:mr-20 flex flex-col gap-10">
-                    <h2 class="text-xl md:text-2xl font-semibold">
-                        {{ link_section.value.section_heading }}
-                    </h2>
-                    <ul class="flex flex-col gap-y-4 md:gap-y-6">
-                        {% for link in link_section.value.links %}
-                        <li>
-                            <a href="{{ link.value.get_url }}"
-                                class="
-                                text-grey-700
-                                underline
-                                underline-offset-8
-                                decoration-[1.5px]
-                                decoration-mackerel-200
-                                hover:decoration-mackerel-300
-                                ">
-                                {{ link.value.get_title }}
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endfor %}
+    {% if settings.navigation.NavigationSettings.partner_links %}
+    <div class="footer-partner-section">
+        <div class="w-full">
+            <div class="flex items-end justify-between gap-8 pb-5 md:pb-6">
+                <h2 class="text-xl md:text-2xl font-semibold">合作单位</h2>
+            </div>
+            <div class="footer-partner-grid" role="list" aria-label="合作单位">
+                {% for partner in settings.navigation.NavigationSettings.partner_links %}
+                    <a
+                        href="{{ partner.value.get_url }}"
+                        class="footer-partner-card"
+                        role="listitem"
+                        aria-label="{{ partner.value.get_title }}"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {% if partner.value.image %}
+                            {% image partner.value.image max-320x160 as partner_image %}
+                            <img
+                                src="{{ partner_image.url }}"
+                                width="{{ partner_image.width }}"
+                                height="{{ partner_image.height }}"
+                                alt="{% firstof partner_image.alt partner.value.get_title %}"
+                                class="footer-partner-image"
+                                {% if partner_image.focal_point %}
+                                style="{{ partner_image.object_position_style }}"
+                                {% endif %}
+                            >
+                        {% else %}
+                            <span class="footer-partner-fallback" aria-hidden="true"></span>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
         </div>
-        {% endif %}
+    </div>
+    {% endif %}
 
+    <div class="flex flex-col lg:flex-row gap-20 justify-between">
         <div>
             {% if settings.utils.SystemMessagesSettings.footer_newsletter_signup_link %}
                 <div class="flex flex-col max-w-96">

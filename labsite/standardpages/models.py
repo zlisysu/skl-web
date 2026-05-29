@@ -155,21 +155,23 @@ class FacultyPage(BasePage):
     subpage_types = []
 
     FACULTY_GROUP_CHOICES = [
-        ("distinguished", "杰出人才"),
-        ("core", "骨干教师"),
-        ("young", "青年教师"),
-        ("researcher", "博后/研究人员"),
+        ("infectious-complications", "感染性疾病并发症机制及新药研发"),
+        ("antimicrobial-resistance", "细菌耐药机制及新药研发"),
+        ("emerging-viral-pathogenesis", "新冠病毒等突发性病毒致病机制"),
+        ("persistent-viral-pathogenesis", "持续性病毒致病机制及新药研发"),
     ]
 
     faculty_group = models.CharField(
         "人员分类",
         max_length=32,
         choices=FACULTY_GROUP_CHOICES,
-        default="core",
+        blank=True,
+        default="",
     )
     name_en = models.CharField("英文姓名", max_length=255, blank=True)
     academic_title = models.CharField("职称", max_length=255, blank=True)
     position = models.CharField("职务", max_length=255, blank=True)
+    affiliation = models.CharField("单位", max_length=255, blank=True)
     photo = models.ForeignKey(
         "images.CustomImage",
         null=True,
@@ -198,6 +200,7 @@ class FacultyPage(BasePage):
         FieldPanel("name_en"),
         FieldPanel("academic_title"),
         FieldPanel("position"),
+        FieldPanel("affiliation"),
         FieldPanel("photo"),
         FieldPanel("research_areas"),
         FieldPanel("email"),
@@ -261,6 +264,16 @@ class AchievementPage(BasePage):
     achievement_date = models.DateField("成果日期", null=True, blank=True)
     responsible_team = models.CharField("责任团队", max_length=255, blank=True)
     summary = models.TextField("摘要", blank=True)
+    source_url = models.URLField(
+        "原文链接",
+        blank=True,
+        help_text="外部来源地址，例如中山大学药学院官网或微信公众号原文。",
+    )
+    open_source_directly = models.BooleanField(
+        "列表中直接跳转原文",
+        default=False,
+        help_text="勾选后，科研成果列表和首页科研入口点击标题时直接打开原文链接。",
+    )
     body = StreamField(StoryBlock(), blank=True)
     related_faculty = models.ManyToManyField(
         "standardpages.FacultyPage",
@@ -280,6 +293,13 @@ class AchievementPage(BasePage):
         FieldPanel("achievement_date"),
         FieldPanel("responsible_team"),
         FieldPanel("summary"),
+        MultiFieldPanel(
+            [
+                FieldPanel("source_url"),
+                FieldPanel("open_source_directly"),
+            ],
+            heading="原文链接",
+        ),
         FieldPanel("body"),
         FieldPanel("related_faculty"),
         FieldPanel("is_featured"),
