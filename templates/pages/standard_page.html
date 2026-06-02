@@ -85,7 +85,9 @@
                                     <span>
                                         {% if child.get_parent.id == page.id %}{{ child.title }}{% else %}{{ child.get_parent.specific.title }}{% endif %}
                                     </span>
-                                    {% if child.first_published_at %}
+                                    {% if child.achievement_date %}
+                                        <span class="research-card-date">{{ child.achievement_date|date:"Y-m-d" }}</span>
+                                    {% elif child.first_published_at %}
                                         <span class="research-card-date">{{ child.first_published_at|date:"Y-m-d" }}</span>
                                     {% endif %}
                                 </div>

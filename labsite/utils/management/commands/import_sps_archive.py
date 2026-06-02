@@ -75,7 +75,7 @@ class Command(BaseCommand):
             raise CommandError("No AchievementIndexPage found.")
 
         author = self.get_author()
-        news_topic = self.get_topic("实验室新闻", "lab-news")
+        news_topic = self.get_topic("药学院新闻", "pharmacy-news")
 
         records = self.collect_records(pages_dir)
         news_records = [record for record in records if record["target"] == "news"]

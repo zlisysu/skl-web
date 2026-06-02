@@ -232,6 +232,10 @@ class SectionBlocks(blocks.StreamBlock):
         features=["bold", "italic", "link", "ol", "ul", "h3"],
         template="components/streamfield/blocks/paragraph_block.html",
     )
+    html = blocks.RawHTMLBlock(
+        label="HTML",
+        help_text="用于导入或嵌入受信任来源的 HTML。普通正文请使用段落。",
+    )
 
 
 class SectionBlock(blocks.StructBlock):
@@ -249,6 +253,10 @@ class SectionBlock(blocks.StructBlock):
 
 class StoryBlock(blocks.StreamBlock):
     section = SectionBlock()
+    html = blocks.RawHTMLBlock(
+        label="HTML",
+        help_text="用于导入或嵌入受信任来源的 HTML。普通正文请使用章节和段落。",
+    )
     cta = CTASectionBlock()
     statistics = StatisticSectionBlock()
 

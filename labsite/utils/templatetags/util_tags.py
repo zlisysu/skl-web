@@ -51,24 +51,33 @@ def menu_children(page):
         ]
 
     if page_type == "NewsListingPage":
+        from labsite.news.models import ordered_news_topics
+
         topics = (
             ArticleTopic.objects.filter(
                 article_pages__live=True,
                 article_pages__path__startswith=page.path,
             )
-            .values("title", "slug")
             .distinct()
-            .order_by("title")
         )
         return [
             {
-                "title": topic["title"],
-                "url": f"{page.url}?topic={topic['slug']}",
+                "title": topic.title,
+                "url": f"{page.url}?topic={topic.slug}",
             }
-            for topic in topics
+            for topic in ordered_news_topics(topics, include_defaults=True)
         ]
 
-    return list(page.get_children().live().public().in_menu().specific())
+    children = list(page.get_children().live().public().in_menu().specific())
+    if page.slug == "research":
+        research_order = {
+            "pipeline": 0,
+            "directions": 1,
+            "achievements": 2,
+            "academic-lectures": 3,
+        }
+        children.sort(key=lambda child: (research_order.get(child.slug, 10), child.path))
+    return children
 
 
 @register.filter

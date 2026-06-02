@@ -1,5 +1,5 @@
 {% extends "base_page.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags wagtailsettings_tags %}
 
 {% block content %}
     {% include "navigation/breadcrumbs.html" %}
@@ -28,25 +28,59 @@
 
         <div class="grid gap-7 lg:gap-8 pt-10">
             {% for item in achievements %}
-                <article class="min-h-52 rounded-3xl border border-mackerel-200 bg-white/80 p-7 md:p-8 transition hover:-translate-y-1 hover:shadow-xl">
-                    <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                        <div>
-                            <p class="font-codepro text-sm uppercase tracking-[0.15em] opacity-60">{{ item.get_achievement_type_display }}</p>
-                            <h2 class="text-3xl font-semibold pt-3">
-                                {% if item.open_source_directly and item.source_url %}
-                                    <a href="{{ item.source_url }}" target="_blank" rel="noopener noreferrer" class="hover:text-mackerel-300">{{ item.title }}</a>
-                                {% else %}
-                                    <a href="{% pageurl item %}" class="hover:text-mackerel-300">{{ item.title }}</a>
+                {% if item.open_source_directly and item.source_url %}
+                    {% firstof item.source_url as achievement_href %}
+                    {% firstof "_blank" as achievement_target %}
+                {% else %}
+                    {% pageurl item as achievement_href %}
+                    {% firstof "" as achievement_target %}
+                {% endif %}
+                {% if item.listing_image %}
+                    {% image item.listing_image fill-800x600 as achievement_image %}
+                {% else %}
+                    {% image settings.utils.SystemMessagesSettings.get_placeholder_image fill-800x600 as achievement_image %}
+                {% endif %}
+                <article class="overflow-hidden rounded-3xl border border-mackerel-200 bg-white/80 transition hover:-translate-y-1 hover:shadow-xl">
+                    <div class="grid gap-0 md:grid-cols-[minmax(220px,320px)_1fr]">
+                        <a
+                            href="{{ achievement_href }}"
+                            {% if achievement_target %}target="{{ achievement_target }}" rel="noopener noreferrer"{% endif %}
+                            class="block h-full bg-grey-100"
+                        >
+                            <img
+                                src="{{ achievement_image.url }}"
+                                width="{{ achievement_image.width }}"
+                                height="{{ achievement_image.height }}"
+                                alt="{% firstof achievement_image.alt item.title %}"
+                                class="aspect-[4/3] h-full w-full object-cover"
+                                {% if achievement_image.focal_point %}
+                                style="{{ achievement_image.object_position_style }}"
                                 {% endif %}
-                            </h2>
+                            >
+                        </a>
+                        <div class="p-7 md:p-8">
+                            <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                                <div>
+                                    <p class="font-codepro text-sm uppercase tracking-[0.15em] opacity-60">{{ item.get_achievement_type_display }}</p>
+                                    <h2 class="text-2xl md:text-3xl font-semibold pt-3">
+                                        <a
+                                            href="{{ achievement_href }}"
+                                            {% if achievement_target %}target="{{ achievement_target }}" rel="noopener noreferrer"{% endif %}
+                                            class="hover:text-mackerel-300"
+                                        >
+                                            {{ item.title }}
+                                        </a>
+                                    </h2>
+                                </div>
+                                {% if item.achievement_date %}
+                                    <p class="shrink-0 text-sm opacity-70">{{ item.achievement_date|date:"Y-m-d" }}</p>
+                                {% endif %}
+                            </div>
+                            {% if item.summary %}
+                                <p class="pt-5 leading-7 opacity-80">{{ item.summary }}</p>
+                            {% endif %}
                         </div>
-                        {% if item.achievement_date %}
-                            <p class="text-sm opacity-70">{{ item.achievement_date|date:"Y-m-d" }}</p>
-                        {% endif %}
                     </div>
-                    {% if item.summary %}
-                        <p class="pt-5 leading-7 opacity-80">{{ item.summary }}</p>
-                    {% endif %}
                 </article>
             {% empty %}
                 <p class="opacity-70">该栏目暂无科研成果。</p>

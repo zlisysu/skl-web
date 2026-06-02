@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import Case, IntegerField, When
 from django.db.models.functions import Coalesce
 from django.core.paginator import Paginator
 from wagtail.admin.panels import FieldPanel, HelpPanel, InlinePanel, MultiFieldPanel
@@ -9,6 +10,32 @@ from wagtail.search import index
 from wagtail.fields import StreamField
 from labsite.utils.models import BasePage, ArticleTopic
 from labsite.utils.blocks import CaptionedImageBlock, StoryBlock, FeaturedArticleBlock
+
+
+NEWS_TOPIC_ORDER = {
+    "open-projects": 0,
+    "pharmacy-news": 1,
+    "hec-news": 2,
+    "lab-news": 10,
+}
+NEWS_TOPIC_DEFAULTS = [
+    ("开放课题", "open-projects"),
+    ("药学院新闻", "pharmacy-news"),
+    ("东阳光新闻", "hec-news"),
+]
+
+
+def ordered_news_topics(queryset=None, include_defaults=False):
+    topics = list(queryset if queryset is not None else ArticleTopic.objects.all())
+    if include_defaults:
+        existing_slugs = {topic.slug for topic in topics}
+        for title, slug in NEWS_TOPIC_DEFAULTS:
+            if slug not in existing_slugs:
+                topics.append(ArticleTopic(title=title, slug=slug))
+    return sorted(
+        topics,
+        key=lambda topic: (NEWS_TOPIC_ORDER.get(topic.slug, 100), topic.title),
+    )
 
 
 class ArticlePage(BasePage):
@@ -134,20 +161,25 @@ class NewsListingPage(BasePage):
             .public()
             .annotate(
                 date=Coalesce("publication_date", "first_published_at"),
+                topic_priority=Case(
+                    When(topic__slug="open-projects", then=0),
+                    default=1,
+                    output_field=IntegerField(),
+                ),
             )
             .select_related("listing_image", "author", "topic")
-            .order_by("-date")
+            .order_by("topic_priority", "-date")
         )
 
-        article_topics = ArticleTopic.objects.filter(
-            article_pages__isnull=False
-        ).values("title", "slug").distinct().order_by("title")
+        article_topics = ordered_news_topics(
+            ArticleTopic.objects.filter(article_pages__isnull=False).distinct(),
+            include_defaults=True,
+        )
         matching_topic = False
 
         topic_query_param = request.GET.get("topic")
-        if topic_query_param and topic_query_param in article_topics.values_list(
-            "slug", flat=True
-        ):
+        valid_topic_slugs = {topic.slug for topic in article_topics}
+        if topic_query_param and topic_query_param in valid_topic_slugs:
             matching_topic = topic_query_param
             queryset = queryset.filter(topic__slug=topic_query_param)
 

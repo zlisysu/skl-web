@@ -46,6 +46,14 @@ class StandardPage(BasePage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         child_pages = list(self.get_children().live().public().specific())
+        if self.slug == "research":
+            research_order = {
+                "pipeline": 0,
+                "directions": 1,
+                "achievements": 2,
+                "academic-lectures": 3,
+            }
+            child_pages.sort(key=lambda child: (research_order.get(child.slug, 10), child.path))
         is_top_level_section = self.get_parent().specific_class.__name__ == "HomePage"
         section_pages = child_pages if is_top_level_section else []
         selected_slug = request.GET.get("section")

@@ -16,13 +16,18 @@ class LinkStructValue(blocks.StructValue):
         return ""
 
     def get_title(self) -> str:
-        if title := self.get("title"):
-            return title
-
         if page := self.get("page"):
             page = page.specific
+            if page.slug == "news" and page.title == "新闻和通知":
+                return page.title
+
+            if title := self.get("title"):
+                return title
 
             return page.listing_title or page.title
+
+        if title := self.get("title"):
+            return title
 
         if document := self.get("document"):
             return document.title
