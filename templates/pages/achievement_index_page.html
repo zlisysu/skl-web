@@ -4,7 +4,7 @@
 {% block content %}
     {% include "navigation/breadcrumbs.html" %}
     <section class="site-padding site-container">
-        <div class="flex flex-col md:flex-row md:items-center py-20">
+        <div class="flex flex-col md:flex-row md:items-center py-14">
             <h1 class="page-heading page-heading-column text-center {% if page.introduction %}md:border-r-[1px] border-grey-200{% endif %}">
                 {{ page.title }}
             </h1>
@@ -16,17 +16,17 @@
         </div>
     </section>
 
-    <section class="site-padding site-container pb-24">
-        <div class="border-t border-mackerel-200 pt-12">
+    <section class="site-padding site-container pb-20">
+        <div class="border-t border-mackerel-200 pt-8">
             <p class="font-codepro text-sm uppercase tracking-[0.2em] text-mackerel-300">
                 Achievements
             </p>
-            <h2 class="font-serif4 text-4xl md:text-6xl font-bold pt-3">
+            <h2 class="achievement-section-title">
                 栏目内容
             </h2>
         </div>
 
-        <div class="grid gap-7 lg:gap-8 pt-10">
+        <div class="achievement-list">
             {% for item in achievements %}
                 {% if item.open_source_directly and item.source_url %}
                     {% firstof item.source_url as achievement_href %}
@@ -40,44 +40,44 @@
                 {% else %}
                     {% image settings.utils.SystemMessagesSettings.get_placeholder_image fill-800x600 as achievement_image %}
                 {% endif %}
-                <article class="overflow-hidden rounded-3xl border border-mackerel-200 bg-white/80 transition hover:-translate-y-1 hover:shadow-xl">
-                    <div class="grid gap-0 md:grid-cols-[minmax(220px,320px)_1fr]">
+                <article class="achievement-list-card">
+                    <div class="achievement-list-card-inner">
                         <a
                             href="{{ achievement_href }}"
                             {% if achievement_target %}target="{{ achievement_target }}" rel="noopener noreferrer"{% endif %}
-                            class="block h-full bg-grey-100"
+                            class="achievement-list-media"
                         >
                             <img
                                 src="{{ achievement_image.url }}"
                                 width="{{ achievement_image.width }}"
                                 height="{{ achievement_image.height }}"
                                 alt="{% firstof achievement_image.alt item.title %}"
-                                class="aspect-[4/3] h-full w-full object-cover"
+                                class="achievement-list-image"
                                 {% if achievement_image.focal_point %}
                                 style="{{ achievement_image.object_position_style }}"
                                 {% endif %}
                             >
                         </a>
-                        <div class="p-7 md:p-8">
-                            <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                                <div>
-                                    <p class="font-codepro text-sm uppercase tracking-[0.15em] opacity-60">{{ item.get_achievement_type_display }}</p>
-                                    <h2 class="text-2xl md:text-3xl font-semibold pt-3">
+                        <div class="achievement-list-body">
+                            <div class="achievement-list-head">
+                                <div class="achievement-list-copy">
+                                    <p class="achievement-list-meta">{{ item.get_achievement_type_display }}</p>
+                                    <h2 class="achievement-list-title">
                                         <a
                                             href="{{ achievement_href }}"
                                             {% if achievement_target %}target="{{ achievement_target }}" rel="noopener noreferrer"{% endif %}
-                                            class="hover:text-mackerel-300"
+                                            class="achievement-list-link"
                                         >
                                             {{ item.title }}
                                         </a>
                                     </h2>
                                 </div>
                                 {% if item.achievement_date %}
-                                    <p class="shrink-0 text-sm opacity-70">{{ item.achievement_date|date:"Y-m-d" }}</p>
+                                    <p class="achievement-list-date">{{ item.achievement_date|date:"Y-m-d" }}</p>
                                 {% endif %}
                             </div>
                             {% if item.summary %}
-                                <p class="pt-5 leading-7 opacity-80">{{ item.summary }}</p>
+                                <p class="achievement-list-summary">{{ item.summary }}</p>
                             {% endif %}
                         </div>
                     </div>
