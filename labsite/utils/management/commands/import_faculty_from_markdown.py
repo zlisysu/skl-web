@@ -36,6 +36,10 @@ class Command(BaseCommand):
         if not rows:
             raise CommandError("No rows found in the '按姓名合并后的迁移视图' section.")
 
+        admin_staff_names = self.admin_staff_names(markdown_path.read_text(encoding="utf-8"))
+        if admin_staff_names:
+            rows = [row for row in rows if row["name"] not in admin_staff_names]
+
         index_page = FacultyIndexPage.objects.first()
         if not index_page:
             raise CommandError("No FacultyIndexPage exists.")
@@ -71,6 +75,14 @@ class Command(BaseCommand):
                 f"({grouped_count} grouped, {created - grouped_count} ungrouped)."
             )
         )
+
+        if admin_staff_names:
+            self.stdout.write(
+                self.style.NOTICE(
+                    f"Skipped {len(admin_staff_names)} admin/technical staff records; "
+                    "they belong on the admin-technical-staff page."
+                )
+            )
 
     def parse_migration_rows(self, text):
         section = self.extract_section(text, "## 按姓名合并后的迁移视图")
@@ -109,6 +121,23 @@ class Command(BaseCommand):
         rest = text[start + len(heading) :]
         match = re.search(r"\n##\s+", rest)
         return rest[: match.start()] if match else rest
+
+    def admin_staff_names(self, text):
+        if "## 药学院管理及中心人员" not in text:
+            return set()
+
+        section = self.extract_section(text, "## 药学院管理及中心人员")
+        names = set()
+        for line in section.splitlines():
+            line = line.strip()
+            if not line.startswith("|"):
+                continue
+            cells = [cell.strip() for cell in line.strip("|").split("|")]
+            if len(cells) < 2 or cells[0] in {"序号", "---:"} or set(cells[0]) <= {"-", ":"}:
+                continue
+            if cells[1]:
+                names.add(cells[1])
+        return names
 
     def split_cell(self, value):
         return [item.strip() for item in value.split("<br>") if item.strip()]

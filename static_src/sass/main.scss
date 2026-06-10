@@ -1396,7 +1396,7 @@
         display: grid;
         grid-template-columns: 120px minmax(0, 1fr);
         gap: 1rem;
-        align-items: start;
+        align-items: flex-start;
     }
 
     .achievement-list {
@@ -1509,7 +1509,7 @@
         }
 
         .achievement-list-head {
-            align-items: start;
+            align-items: flex-start;
             display: flex;
             gap: 1rem;
             justify-content: space-between;
@@ -1681,9 +1681,62 @@
     }
 
     .faculty-card-media {
+        display: block;
         width: 120px;
         height: 140px;
         overflow: hidden;
+    }
+
+    .staff-table-block {
+        @apply text-grey-700;
+        display: grid;
+        gap: 1.25rem;
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .staff-table-block p {
+        margin: 0;
+    }
+
+    .staff-table-scroll {
+        @apply border border-mackerel-200 bg-white;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+    }
+
+    .staff-table {
+        border-collapse: collapse;
+        min-width: 44rem;
+        width: 100%;
+    }
+
+    .staff-table th,
+    .staff-table td {
+        border-bottom: 1px solid rgba(150, 215, 229, 0.55);
+        padding: 0.85rem 1rem;
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .staff-table th {
+        @apply bg-mackerel-300 font-codepro text-sm font-semibold text-white;
+        letter-spacing: 0.08em;
+    }
+
+    .staff-table td:first-child,
+    .staff-table th:first-child {
+        width: 5rem;
+        text-align: center;
+    }
+
+    .staff-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .staff-table a {
+        @apply text-mackerel-300 underline underline-offset-4 hover:text-mackerel-400;
     }
 
     @media (min-width: 768px) {
@@ -1705,7 +1758,7 @@
 
         .home-overview {
             grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.4fr);
-            align-items: start;
+            align-items: flex-start;
         }
 
         .home-hero {

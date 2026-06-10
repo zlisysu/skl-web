@@ -14,12 +14,14 @@ from labsite.utils.blocks import CaptionedImageBlock, StoryBlock, FeaturedArticl
 
 NEWS_TOPIC_ORDER = {
     "open-projects": 0,
-    "pharmacy-news": 1,
-    "hec-news": 2,
+    "academic-exchange": 1,
+    "pharmacy-news": 2,
+    "hec-news": 3,
     "lab-news": 10,
 }
 NEWS_TOPIC_DEFAULTS = [
     ("开放课题", "open-projects"),
+    ("学术交流", "academic-exchange"),
     ("药学院新闻", "pharmacy-news"),
     ("东阳光新闻", "hec-news"),
 ]

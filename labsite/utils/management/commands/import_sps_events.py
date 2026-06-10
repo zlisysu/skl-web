@@ -1,21 +1,23 @@
 import re
-from datetime import datetime
+from datetime import datetime, time
 from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.utils import timezone
 from django.utils.text import slugify
 
-from labsite.standardpages.models import StandardPage
+from labsite.news.models import ArticlePage, NewsListingPage
+from labsite.utils.models import ArticleTopic, AuthorSnippet
 
 
 SITE = "https://sps.sysu.edu.cn"
 
 
 class Command(BaseCommand):
-    help = "Import SPS academic lecture events into /research/academic-lectures/."
+    help = "Import SPS academic lecture events into /news/ with the academic exchange topic."
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -32,9 +34,18 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        parent = StandardPage.objects.filter(slug="academic-lectures").first()
+        parent = NewsListingPage.objects.first()
         if not parent:
-            raise CommandError("No /research/academic-lectures/ page found.")
+            raise CommandError("No /news/ page found.")
+
+        author = AuthorSnippet.objects.first() or AuthorSnippet.objects.create(title="实验室办公室")
+        topic, _created = ArticleTopic.objects.get_or_create(
+            slug="academic-exchange",
+            defaults={"title": "学术交流"},
+        )
+        if topic.title != "学术交流":
+            topic.title = "学术交流"
+            topic.save(update_fields=["title"])
 
         items = self.collect_event_links(options["max_pages"], options["min_lecture_number"])
         created = updated = 0
@@ -43,7 +54,7 @@ class Command(BaseCommand):
                 detail = self.fetch_event_detail(item["url"])
                 if not detail:
                     continue
-                page, was_created = self.upsert_event(parent, detail)
+                page, was_created = self.upsert_event(parent, author, topic, detail)
                 if was_created:
                     created += 1
                 else:
@@ -132,12 +143,17 @@ class Command(BaseCommand):
             "url": url,
         }
 
-    def upsert_event(self, parent, detail):
-        existing = StandardPage.objects.child_of(parent).filter(title=detail["title"]).specific().first()
+    def upsert_event(self, parent, author, topic, detail):
+        existing = ArticlePage.objects.child_of(parent).filter(title=detail["title"]).specific().first()
         introduction = detail["summary"]
         body = self.story_body(detail)
         if existing:
+            existing.author = author
+            existing.topic = topic
+            existing.publication_date = self.as_datetime(detail["date"])
             existing.introduction = introduction
+            existing.source_url = detail["url"]
+            existing.open_source_directly = False
             existing.body = body
             existing.listing_summary = introduction[:255]
             existing.search_description = introduction[:255]
@@ -146,10 +162,15 @@ class Command(BaseCommand):
             existing.save_revision().publish()
             return existing, False
 
-        page = StandardPage(
+        page = ArticlePage(
             title=detail["title"],
             slug=self.unique_slug(parent, detail["title"]),
+            author=author,
+            topic=topic,
+            publication_date=self.as_datetime(detail["date"]),
             introduction=introduction,
+            source_url=detail["url"],
+            open_source_directly=False,
             body=body,
             listing_summary=introduction[:255],
             search_description=introduction[:255],
@@ -211,6 +232,11 @@ class Command(BaseCommand):
         if not match:
             return None
         return datetime.strptime(match.group(1), "%Y-%m-%d").date()
+
+    def as_datetime(self, value):
+        if value:
+            return timezone.make_aware(datetime.combine(value, time.min))
+        return timezone.now()
 
     def clean_title(self, value):
         return value.replace(" | 中山大学药学院", "").strip()

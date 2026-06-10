@@ -187,6 +187,11 @@ class FacultyPage(BasePage):
         on_delete=models.SET_NULL,
         related_name="+",
     )
+    official_profile_url = models.URLField(
+        "官网介绍链接",
+        blank=True,
+        help_text="填写后，师资列表中的姓名会直接打开该官网介绍页。",
+    )
     research_areas = models.CharField("研究方向", max_length=255, blank=True)
     email = models.EmailField("邮箱", blank=True)
     phone = models.CharField("电话", max_length=64, blank=True)
@@ -210,6 +215,7 @@ class FacultyPage(BasePage):
         FieldPanel("position"),
         FieldPanel("affiliation"),
         FieldPanel("photo"),
+        FieldPanel("official_profile_url"),
         FieldPanel("research_areas"),
         FieldPanel("email"),
         FieldPanel("phone"),

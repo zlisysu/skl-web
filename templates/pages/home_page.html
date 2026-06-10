@@ -200,40 +200,6 @@
             </div>
         </section>
 
-        <section id="home-faculty" class="site-padding site-container home-module">
-            <div class="home-module-shell">
-                <div class="home-module-head">
-                    <div>
-                        <p class="home-module-kicker">Faculty</p>
-                        <h2 class="home-module-title">实验室成员</h2>
-                    </div>
-                    <a class="home-module-link" href="/faculty/">查看全部</a>
-                </div>
-                <div class="grid home-module-grid md:grid-cols-2 xl:grid-cols-3">
-                    {% for member in featured_faculty %}
-                        <article class="home-person-card">
-                            {% if member.photo %}
-                                <div class="home-person-media">
-                                    {% image member.photo fill-560x420 class="home-person-image" %}
-                                </div>
-                            {% endif %}
-                            <div class="home-person-body">
-                                <p class="home-person-kicker">Faculty Profile</p>
-                                <h3 class="home-person-title">
-                                    <a href="{% pageurl member %}">{{ member.title }}</a>
-                                </h3>
-                                {% if member.position or member.research_areas %}
-                                    <p class="home-person-summary">{{ member.position }}{% if member.position and member.research_areas %} / {% endif %}{{ member.research_areas }}</p>
-                                {% endif %}
-                            </div>
-                        </article>
-                    {% empty %}
-                        <p class="pt-8 opacity-70">后台添加教师详情页后，这里会自动显示推荐师资。</p>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-
         <section id="home-research" class="site-padding site-container home-module">
             <div class="home-module-shell">
                 <div class="home-module-head">
