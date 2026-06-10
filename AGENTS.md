@@ -12,6 +12,7 @@
 - 师资力量
 - 新闻
 - 学术科研
+- 技术转化
 - 联系我们
 
 目前这个项目已经不是原始的 Wagtail starter，而是在 starter 基础上做了实验室站点定制。
@@ -175,7 +176,9 @@ npm run start
 - `HomePage` 自身字段
   - `introduction`
   - `hero_image`
+  - `background_image`
   - `hero_cta`
+  - `hero_quick_links`
   - `body`（现在已改成可选）
 - `HomePage.get_context()`
   - 自动取最新新闻
@@ -219,6 +222,11 @@ npm run start
 - 创建实验室概况/党建工作/学术科研下的子栏目
 - 初始化导航
 
+后续又通过独立 migration 增补过部分栏目，例如：
+
+- `labsite/standardpages/migrations/0010_add_academic_lectures_page_remove_platform.py`
+- `labsite/standardpages/migrations/0012_add_technology_transfer_section.py`
+
 注意：
 
 - 这类 migration 是“一次性初始化脚本”
@@ -260,6 +268,7 @@ npm run build
 - `blank=True`
 - 新增字段
 - 删除字段
+- StreamField block 结构变化
 
 就需要：
 
@@ -268,6 +277,15 @@ cd lab-web
 .venv/bin/python manage.py makemigrations
 .venv/bin/python manage.py migrate
 ```
+
+提交前建议额外跑：
+
+```bash
+cd lab-web
+.venv/bin/python manage.py makemigrations --check --dry-run
+```
+
+如果这个命令提示还有待生成迁移，说明当前模型和迁移文件不同步。
 
 ### 优先保持当前站点结构一致
 
@@ -293,7 +311,9 @@ cd lab-web
 - 联系方式
 - 首页 `introduction`
 - 首页 `hero_image`
+- 首页 `background_image`
 - 首页 `hero_cta`
+- 首页 `hero_quick_links`
 
 ### 适合改代码
 
@@ -342,3 +362,6 @@ cd lab-web
 3. 清理首页后台里不再使用的字段或面板，减少误导。
 4. 把真正要长期维护的首页内容，改成后台可配置，而不是硬编码在模板里。
 
+## 13. 当前内容块补充说明
+
+`StoryBlock` 现在包含受信任 HTML 内容块，主要用于导入历史内容或嵌入已确认来源的 HTML。普通正文仍建议优先使用章节和段落块，避免在后台长期维护大段 HTML。
